@@ -1,10 +1,8 @@
 package com.opom.jobfinder;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class JobFinderApplicationTests {
+class JobFinderApplicationTests extends AbstractIntegration {
 
 	@Test
 	void contextLoads() {
