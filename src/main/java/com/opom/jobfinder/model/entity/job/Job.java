@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -27,4 +28,10 @@ public class Job extends AbstractEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToMany(mappedBy = "job")
+    private List<JobAttachment> attachments;
+
+    @OneToMany(mappedBy = "job")
+    private List<JobApplication> jobApplications;
 }

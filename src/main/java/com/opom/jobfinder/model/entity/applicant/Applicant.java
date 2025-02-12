@@ -3,6 +3,7 @@ package com.opom.jobfinder.model.entity.applicant;
 import com.opom.jobfinder.model.entity.AbstractEntity;
 import com.opom.jobfinder.model.entity.account.Account;
 import com.opom.jobfinder.model.entity.company.Review;
+import com.opom.jobfinder.model.entity.job.JobApplication;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -39,4 +40,7 @@ public class Applicant extends AbstractEntity {
 
     @OneToMany(mappedBy = "applicant")
     private List<Experience> experiences;
+
+    @OneToMany(mappedBy = "applicant")
+    private List<JobApplication> jobApplications;
 }

@@ -16,6 +16,6 @@ public class JobAttachment extends AbstractEntity {
     private String path;
 
     @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(name = "job_id", insertable = false, updatable = false)
     private Job job;
 }

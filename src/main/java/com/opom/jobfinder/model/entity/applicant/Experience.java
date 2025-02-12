@@ -16,7 +16,10 @@ public class Experience extends AbstractEntity {
 
     private String companyName;
     private String address;
+
+    @Column(nullable = false)
     private String title;
+
     private String description;
 
     private String jobType;
