@@ -13,13 +13,12 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-public class Skill extends AbstractEntity {
+public class JobCategory extends AbstractEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
     @Column(nullable = false)
     private String name;
-
     private String description;
 }

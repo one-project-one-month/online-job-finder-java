@@ -1,17 +1,27 @@
 package com.opom.jobfinder.model.entity.info;
 
 import com.opom.jobfinder.model.entity.AbstractEntity;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-public class Industry extends AbstractEntity {
+@EqualsAndHashCode(callSuper = true)
+public class Location extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false)
     private String name;
+
     private String description;
+
 }
