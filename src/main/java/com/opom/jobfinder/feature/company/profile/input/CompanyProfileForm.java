@@ -1,9 +1,7 @@
 package com.opom.jobfinder.feature.company.profile.input;
 
-import com.opom.jobfinder.feature.company.profile.output.SocialMediaDto;
+import com.opom.jobfinder.model.entity.company.Company;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class CompanyProfileForm {
@@ -13,5 +11,5 @@ public class CompanyProfileForm {
     private String website;
     private String address;
     private String description;
-    private List<SocialMediaDto> socialMedias;
+    private int locationId;
 }
