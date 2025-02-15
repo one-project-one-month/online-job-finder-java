@@ -29,9 +29,9 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         // need to use login username for the email argument. waiting for security config
         var company = companyRepo.findOneByEmail(null).orElseThrow(() -> new IllegalArgumentException("Invalid email"));
         update(company, form);
-        companyRepo.saveAndFlush(company);
         checkProfileCompletion(company);
         nextVersion(company);
+        companyRepo.saveAndFlush(company);
         return CompanyProfile.from(company);
     }
 
