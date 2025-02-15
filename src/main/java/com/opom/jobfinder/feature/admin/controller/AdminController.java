@@ -1,5 +1,11 @@
 package com.opom.jobfinder.feature.admin.controller;
 
+import com.opom.jobfinder.feature.admin.service.LocationService;
+import com.opom.jobfinder.model.entity.info.Location;
+import com.opom.jobfinder.utility.BaseResponse;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import com.opom.jobfinder.dto.info.SkillDto;
 import com.opom.jobfinder.feature.admin.service.AdminService;
 import jakarta.validation.Valid;
@@ -78,5 +84,17 @@ public class AdminController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Skill with ID " + id + " not found.");
         }
+    }
+    // CONSTANT VALUES
+    private final LocationService locationService;
+
+    // CONSTRUCTOR
+    public AdminController(LocationService locationService) {
+        this.locationService = locationService;
+    }
+
+    @PostMapping
+    public ResponseEntity<BaseResponse> addLocation(@RequestBody Location location ) {
+        return ResponseEntity.ok(locationService.createLocation(location));
     }
 }
