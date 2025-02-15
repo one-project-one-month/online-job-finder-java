@@ -34,7 +34,7 @@ public class Account extends AbstractEntity {
     @Column(nullable = true)
     private String profilePhoto;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private List<SocialMedia> socialMedias;
 
 }

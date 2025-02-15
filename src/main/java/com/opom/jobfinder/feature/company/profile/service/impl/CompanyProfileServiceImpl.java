@@ -28,6 +28,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     @Override
     @Transactional
     public CompanyProfile updateProfile(CompanyProfileForm form) {
+        // need to use login username for the email argument. waiting for security config
         var company = companyRepo.findOneByEmail(null).orElseThrow(() -> new IllegalArgumentException("Invalid email"));
         update(company, form);
         companyRepo.saveAndFlush(company);

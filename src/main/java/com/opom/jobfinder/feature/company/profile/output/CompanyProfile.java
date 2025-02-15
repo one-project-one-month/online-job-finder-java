@@ -23,6 +23,7 @@ public class CompanyProfile {
     private String website;
     private String address;
     private String description;
+    private LocationDto location;
     private List<SocialMediaDto> socialMedias;
     private boolean completed;
 
@@ -37,6 +38,7 @@ public class CompanyProfile {
                 .website(company.getWebsite())
                 .address(company.getAddress())
                 .description(company.getDescription())
+                .location(LocationDto.from(company.getLocation()))
                 .socialMedias(company.getAccount().getSocialMedias().stream().map(SocialMediaDto::from).toList())
                 .completed(company.getAccount().isCompleted())
                 .build();

@@ -5,7 +5,6 @@ import com.opom.jobfinder.feature.company.profile.service.CompanyProfileService;
 import com.opom.jobfinder.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +21,7 @@ public class CompanyProfileController {
     }
 
     @PutMapping
-    ResponseEntity<BaseResponse> update(@Validated @RequestBody CompanyProfileForm form) {
+    ResponseEntity<BaseResponse> update(@RequestBody CompanyProfileForm form) {
         var data = service.updateProfile(form);
         return ResponseEntity.ok(BaseResponse.of(null, data, "Updated company profile"));
     }
