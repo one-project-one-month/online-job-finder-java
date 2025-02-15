@@ -84,8 +84,9 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
         if (company.isPresent() && newLocation.isPresent()) {
             company.get().setLocation(newLocation.get());
+            return BaseResponse.of(MessageConstants.SUCCESS, companyRepo.save(company.get()), Translator.toLocale(MessageConstants.SUCCESS));
         }
-        return null;
+        throw new BadRequestException("Update Location By Company Failed!");
     }
 
     @Override
@@ -127,6 +128,4 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             throw new BadRequestException("Searching Companies by Location Failed!");
         }
     }
-
-
 }
