@@ -1,8 +1,8 @@
 package com.opom.jobfinder.model.entity.applicant;
 
 import com.opom.jobfinder.model.entity.AbstractEntity;
-import com.opom.jobfinder.model.entity.applicant.pk.SavedJobPk;
-import com.opom.jobfinder.model.entity.job.Job;
+import com.opom.jobfinder.model.entity.applicant.pk.ApplicantJobCategoryPk;
+import com.opom.jobfinder.model.entity.info.JobCategory;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -14,16 +14,17 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-public class SavedJob extends AbstractEntity {
+public class ApplicantJobCategory extends AbstractEntity {
 
     @EmbeddedId
-    private SavedJobPk id;
+    private ApplicantJobCategoryPk id;
 
     @ManyToOne
-    @JoinColumn(name = "job_id", insertable = false, updatable = false)
-    private Job job;
+    @JoinColumn(name = "job_category_id", insertable = false, updatable = false)
+    private JobCategory jobCategory;
 
     @ManyToOne
     @JoinColumn(name = "applicant_id", insertable = false, updatable = false)
     private Applicant applicant;
+
 }

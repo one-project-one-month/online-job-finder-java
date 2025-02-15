@@ -11,8 +11,19 @@ import java.util.UUID;
 @Embeddable
 @AllArgsConstructor
 public class JobApplicationPk {
-    @Column(name = "job_id")
-    private UUID jobId;
-    @Column(name = "applicant_id")
-    private UUID applicantId;
+
+	@Column(name = "job_id")
+	private UUID jobId;
+	
+	@Column(name = "applicant_id")
+	private UUID applicantId;
+
+	public String getValue() {
+		return "%s-%s".formatted(jobId, applicantId);
+	}
+	
+	public static JobApplicationPk parse(String id) {
+		var array = id.split("-");
+		return new JobApplicationPk(UUID.fromString(array[0]), UUID.fromString(array[1]));
+	}
 }

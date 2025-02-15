@@ -1,14 +1,23 @@
 package com.opom.jobfinder.model.entity.company;
 
+import java.util.UUID;
+
 import com.opom.jobfinder.model.entity.AbstractEntity;
 import com.opom.jobfinder.model.entity.applicant.Applicant;
-import jakarta.persistence.*;
-import lombok.Data;
 
-import java.util.UUID;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 public class Review extends AbstractEntity {
 
     @Id
@@ -16,9 +25,9 @@ public class Review extends AbstractEntity {
     private UUID id;
 
     @Column(nullable = false)
-    private String content;
+    private String comment;
 
-    private Rating rating;
+    private Double rating;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "company_id")
@@ -28,7 +37,4 @@ public class Review extends AbstractEntity {
     @JoinColumn(name = "applicant_id")
     private Applicant applicant;
 
-    public enum Rating {
-        One, Two, Three, Four, Five
-    }
 }
