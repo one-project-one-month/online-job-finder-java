@@ -93,7 +93,7 @@ public class AdminController {
         this.locationService = locationService;
     }
 
-    @PostMapping
+    @PostMapping("/locations")
     public ResponseEntity<BaseResponse> addLocation(@RequestBody Location location ) {
         return ResponseEntity.ok(locationService.createLocation(location));
     }
