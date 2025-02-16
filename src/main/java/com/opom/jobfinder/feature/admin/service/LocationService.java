@@ -27,12 +27,6 @@ public interface LocationService {
     // DELETE LOCATION (DELETE BY ADMIN)
     BaseResponse deleteLocation(String id);
 
-    // UPDATE LOCATION BY APPLICANT (UPDATE LOCATION APPLICANT BY THEMSELVES)
-    BaseResponse updateLocationByApplicant(String locationId,UUID applicantId);
-
-    // UPDATE LOCATION BY COMPANY (UPDATE LOCATION COMPANY BY THEMSELVES)
-    BaseResponse updateLocationByCompany(String locationId,UUID companyId);
-
     // GET APPLICANTS BY LOCATION ID (FOR ADMIN DASHBOARD)
     List<Applicant> getApplicantsByLocationId(String locationId);
 

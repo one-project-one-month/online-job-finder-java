@@ -73,25 +73,6 @@ public class LocationServiceImpl extends BaseService implements LocationService 
         return BaseResponse.of(MessageConstants.SUCCESS, "Delete Location Successfully!", Translator.toLocale(MessageConstants.SUCCESS));
     }
 
-    // USE FROM APPLICANT CONTROLLER
-    @Override
-    public BaseResponse updateLocationByApplicant(String locationId, UUID applicantId) {
-        return null;
-    }
-
-    // USE FROM COMPANY CONTROLLER
-    @Override
-    public BaseResponse updateLocationByCompany(String locationId, UUID companyId) {
-        Optional<Company> company = companyRepo.findById(companyId);
-        Optional<Location> newLocation = locationRepo.findById(locationId);
-
-        if (company.isPresent() && newLocation.isPresent()) {
-            company.get().setLocation(newLocation.get());
-            return BaseResponse.of(MessageConstants.SUCCESS, companyRepo.save(company.get()), Translator.toLocale(MessageConstants.SUCCESS));
-        }
-        throw new BadRequestException("Update Location By Company Failed!Location Or Company is not available");
-    }
-
     @Override
     public List<Applicant> getApplicantsByLocationId(String locationId) {
         return List.of();
