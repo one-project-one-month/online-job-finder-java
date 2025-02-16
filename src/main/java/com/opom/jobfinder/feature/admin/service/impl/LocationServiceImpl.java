@@ -68,15 +68,18 @@ public class LocationServiceImpl extends BaseService implements LocationService 
     }
 
     @Override
-    public void deleteLocation(String id) {
+    public BaseResponse deleteLocation(String id) {
         locationRepo.deleteById(id);
+        return BaseResponse.of(MessageConstants.SUCCESS, "Delete Location Successfully!", Translator.toLocale(MessageConstants.SUCCESS));
     }
 
+    // USE FROM APPLICANT CONTROLLER
     @Override
     public BaseResponse updateLocationByApplicant(String locationId, UUID applicantId) {
         return null;
     }
 
+    // USE FROM COMPANY CONTROLLER
     @Override
     public BaseResponse updateLocationByCompany(String locationId, UUID companyId) {
         Optional<Company> company = companyRepo.findById(companyId);
@@ -86,7 +89,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             company.get().setLocation(newLocation.get());
             return BaseResponse.of(MessageConstants.SUCCESS, companyRepo.save(company.get()), Translator.toLocale(MessageConstants.SUCCESS));
         }
-        throw new BadRequestException("Update Location By Company Failed!");
+        throw new BadRequestException("Update Location By Company Failed!Location Or Company is not available");
     }
 
     @Override
@@ -100,17 +103,18 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             List<Job> jobs = jobRepo.search(cb -> {
                 CriteriaQuery<Job> query = cb.createQuery(Job.class);
                 Root<Job> root = query.from(Job.class);
-                query.select(root).where(cb.equal(root.get("location").get("id"), UUID.fromString(locationId)));
+                query.select(root).where(cb.equal(root.get("location").get("id"), locationId));
                 return query;
             });
 
             return BaseResponse.of(MessageConstants.SUCCESS, jobs, Translator.toLocale(MessageConstants.SUCCESS));
 
+        }catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid UUID format for location ID: " + Integer.parseInt(locationId));
         } catch (Exception e) {
-            throw new BadRequestException("Searching Jobs by Location Failed!");
+            throw new BadRequestException("Searching Jobs by Location Failed!"+e.getMessage()+e.getClass());
         }
     }
-
 
     @Override
     public BaseResponse getCompaniesByLocation(String locationId) {
@@ -118,7 +122,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             List<Company> companies = companyRepo.search(cb -> {
                 CriteriaQuery<Company> query = cb.createQuery(Company.class);
                 Root<Company> root = query.from(Company.class);
-                query.select(root).where(cb.equal(root.get("location").get("id"), UUID.fromString(locationId)));
+                query.select(root).where(cb.equal(root.get("location").get("id"), Integer.parseInt(locationId)));
                 return query;
             });
 

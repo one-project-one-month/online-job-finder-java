@@ -25,7 +25,7 @@ public interface LocationService {
     BaseResponse updateLocation(Location locationDetails);
 
     // DELETE LOCATION (DELETE BY ADMIN)
-    void deleteLocation(String id);
+    BaseResponse deleteLocation(String id);
 
     // UPDATE LOCATION BY APPLICANT (UPDATE LOCATION APPLICANT BY THEMSELVES)
     BaseResponse updateLocationByApplicant(String locationId,UUID applicantId);
