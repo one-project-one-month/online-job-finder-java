@@ -28,7 +28,7 @@ public interface LocationService {
     BaseResponse deleteLocation(String id);
 
     // GET APPLICANTS BY LOCATION ID (FOR ADMIN DASHBOARD)
-    List<Applicant> getApplicantsByLocationId(String locationId);
+//    List<Applicant> getApplicantsByLocationId(String locationId);
 
     // GET JOBS BY LOCATION ID (FOR APPLICANT && FOR ADMIN DASHBOARD)
     BaseResponse getJobsByLocation(String locationID);

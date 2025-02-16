@@ -59,7 +59,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
     @Override
     public BaseResponse getLocationById(String id) {
-        return BaseResponse.of(MessageConstants.SUCCESS, locationRepo.findById(id), Translator.toLocale(MessageConstants.SUCCESS));
+        return BaseResponse.of(MessageConstants.SUCCESS, locationRepo.findById(Integer.parseInt(id)), Translator.toLocale(MessageConstants.SUCCESS));
     }
 
     @Override
@@ -69,14 +69,14 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
     @Override
     public BaseResponse deleteLocation(String id) {
-        locationRepo.deleteById(id);
+        locationRepo.deleteById(Integer.parseInt(id));
         return BaseResponse.of(MessageConstants.SUCCESS, "Delete Location Successfully!", Translator.toLocale(MessageConstants.SUCCESS));
     }
 
-    @Override
-    public List<Applicant> getApplicantsByLocationId(String locationId) {
-        return List.of();
-    }
+//    @Override
+//    public List<Applicant> getApplicantsByLocationId(String locationId) {
+//        return List.of();
+//    }
 
     @Override
     public BaseResponse getJobsByLocation(String locationId) {
