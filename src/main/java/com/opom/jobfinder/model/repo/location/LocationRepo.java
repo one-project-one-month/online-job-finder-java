@@ -6,6 +6,6 @@ import com.opom.jobfinder.model.repo.BaseRepositoryImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LocationRepo extends BaseRepository<Location, String> {
+public interface LocationRepo extends BaseRepository<Location, Integer> {
 
 }
