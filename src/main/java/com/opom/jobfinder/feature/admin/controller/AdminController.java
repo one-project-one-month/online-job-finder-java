@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("admin")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
     // CONSTANT VALUES
@@ -19,7 +20,7 @@ public class AdminController {
         this.locationService = locationService;
     }
 
-    @PostMapping
+    @PostMapping("/locations")
     public ResponseEntity<BaseResponse> addLocation(@RequestBody Location location ) {
         return ResponseEntity.ok(locationService.createLocation(location));
     }
