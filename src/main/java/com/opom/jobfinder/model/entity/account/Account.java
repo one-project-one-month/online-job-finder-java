@@ -65,5 +65,5 @@ public class Account extends AbstractEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName()));
     }
 
-   
+
 }
