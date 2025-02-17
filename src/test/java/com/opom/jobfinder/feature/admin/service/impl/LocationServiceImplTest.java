@@ -9,6 +9,8 @@ import com.opom.jobfinder.model.repo.job.JobRepo;
 import com.opom.jobfinder.model.repo.location.LocationRepo;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.Translator;
+import com.opom.jobfinder.utility.exception.BadRequestException;
+import com.opom.jobfinder.utility.exception.UnexpectedException;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.AfterEach;
@@ -65,7 +67,7 @@ class LocationServiceImplTest {
     }
 
     @Test
-    void createLocation() {
+    void createLocation_success() {
         when(locationRepo.save(sampleLocation)).thenReturn(sampleLocation);
 
         String locationId = String.valueOf(sampleLocation.getId());
@@ -78,6 +80,16 @@ class LocationServiceImplTest {
         assertThat(result.message(), is("mocked message"));
         verify(locationRepo, times(1)).save(sampleLocation);
     }
+
+    @Test
+    void createLocation_fail_1() {
+        when(locationRepo.save(sampleLocation)).thenThrow(new RuntimeException("Database error"));
+
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("Error occurred");
+
+        assertThrows(RuntimeException.class, () -> {locationService.createLocation(sampleLocation);});
+    }
+
 
     @Test
     void getAllLocations() {
