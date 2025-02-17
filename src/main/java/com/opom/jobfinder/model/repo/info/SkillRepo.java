@@ -1,9 +1,8 @@
 package com.opom.jobfinder.model.repo.info;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.opom.jobfinder.model.entity.info.Skill;
+import com.opom.jobfinder.model.repo.BaseRepository;
 
+public interface SkillRepo extends BaseRepository<Skill, Integer> {
 
-public interface SkillRepo extends JpaRepository<Skill,Integer> {
 }
