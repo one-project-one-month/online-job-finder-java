@@ -38,6 +38,7 @@ public class Account extends AbstractEntity implements UserDetails {
 
     private boolean completed;
 
+    @Column(nullable = true)
     private String profilePhoto;
 
     @OneToMany(mappedBy = "account")
