@@ -67,7 +67,7 @@ class LocationServiceImplTest {
     }
 
     @Test
-    void createLocation_success() {
+    void createLocation() {
         when(locationRepo.save(sampleLocation)).thenReturn(sampleLocation);
 
         String locationId = String.valueOf(sampleLocation.getId());
