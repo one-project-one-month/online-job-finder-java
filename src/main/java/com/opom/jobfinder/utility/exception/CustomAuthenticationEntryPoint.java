@@ -26,11 +26,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         BaseResponse customResponse = BaseResponse.of(MessageConstants.UNAUTHORIZED_ERROR, null, Translator.toLocale(MessageConstants.UNAUTHORIZED_ERROR));
         String jsonResponse = objectMapper.writeValueAsString(customResponse);
 
-        if (!response.isCommitted()) {
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(jsonResponse);
-        }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(jsonResponse);
     }
 }

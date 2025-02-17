@@ -14,8 +14,4 @@ public record BaseResponse (
     public static BaseResponse of(String errorCode, Object data, String message) {
         return new BaseResponse(new Date(), errorCode, data, message);
     }
-
-    public static BaseResponse success(Object data) {
-        return BaseResponse.of(MessageConstants.SUCCESS, data, Translator.toLocale(MessageConstants.SUCCESS));
-    }
 }
