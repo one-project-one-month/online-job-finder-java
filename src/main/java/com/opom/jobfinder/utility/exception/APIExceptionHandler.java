@@ -7,6 +7,8 @@ import com.opom.jobfinder.utility.Translator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import javax.crypto.BadPaddingException;
 import java.util.HashMap;
@@ -32,7 +35,7 @@ public class APIExceptionHandler {
 
     @ExceptionHandler(UnexpectedException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public BaseResponse unexpectedException(BadRequestException ex) {
+    public BaseResponse unexpectedException(UnexpectedException ex) {
         log.error("Error ", ex);
         return BaseResponse.of(MessageConstants.INTERNAL_SERVER_ERROR, null, ex.getMessage());
     }
@@ -45,7 +48,8 @@ public class APIExceptionHandler {
             BadPaddingException.class,
             JsonProcessingException.class,
             HttpMessageNotReadableException.class,
-            IndexOutOfBoundsException.class
+            IndexOutOfBoundsException.class,
+            NoResourceFoundException.class
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public BaseResponse validateException(Exception ex) {
@@ -65,6 +69,36 @@ public class APIExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse handleAllException(Exception ex) {
         log.error("Error ", ex);
-        return BaseResponse.of(MessageConstants.INTERNAL_SERVER_ERROR, null ,Translator.toLocale(MessageConstants.INTERNAL_SERVER_ERROR));
+        return BaseResponse.of(MessageConstants.INTERNAL_SERVER_ERROR, null, Translator.toLocale(MessageConstants.INTERNAL_SERVER_ERROR));
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public BaseResponse handleUnauthorizedException(Exception ex) {
+        log.error("Error ", ex);
+        return BaseResponse.of(MessageConstants.UNAUTHORIZED_ERROR, null, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public BaseResponse handleAccessDeniedException(Exception ex) {
+        log.error("Error ", ex);
+        return BaseResponse.of(MessageConstants.ACCESS_DENIED_ERROR, null, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            BadCredentialsException.class,
+            InternalAuthenticationServiceException.class
+    })
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public BaseResponse handleCredentialException (Exception ex) {
+        log.error("Error ", ex);
+        return BaseResponse.of(
+                MessageConstants.UNAUTHORIZED_ERROR,
+                null,
+                Translator.toLocale(MessageConstants.UNAUTHORIZED_ERROR)
+        );
+    }
+
+
 }
