@@ -15,8 +15,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.UriTemplate;
 
 import java.io.IOException;
+
 
 @Component
 @RequiredArgsConstructor
