@@ -122,7 +122,6 @@ class ReviewServiceImplTest {
         List<Double> mockRatings = List.of(4.5, 3.5, 5.0);
         when(reviewRepo.search(any())).thenReturn((List) mockRatings);
 
-        // When: Service method is called
         BaseResponse result = reviewService.getAverageReviewFromCompany(validId);
 
         double expectedAverage = mockRatings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
@@ -131,12 +130,10 @@ class ReviewServiceImplTest {
         List<?> actualData = reviewRepo.search(any());
         System.out.println("Mocked Repo Data: " + actualData);
 
-        // Then: Verify results
         assertNotNull(result);
         assertThat(result.errorCode(), is("00000") );
         assertEquals(expectedAverage, (double) result.data(),0.0001);
 
-        // Verify repository interaction
         verify(reviewRepo, times(1)).search(any());
     }
 }
