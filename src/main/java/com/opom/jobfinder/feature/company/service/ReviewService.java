@@ -1,10 +1,8 @@
-package com.opom.jobfinder.feature.applicant.service;
+package com.opom.jobfinder.feature.company.service;
 
 
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.utility.BaseResponse;
-
-import java.util.UUID;
 
 public interface ReviewService {
 
