@@ -7,13 +7,10 @@ import com.opom.jobfinder.utility.BaseResponse;
 public interface ReviewService {
 
     // ADD REVIEW
-    BaseResponse addReview(Review review);
-
-    // FIND REVIEW BY ID
-    BaseResponse findReviewById(String reviewId);
+    BaseResponse addReview(Review review,String companyId);
 
     // UPDATE REVIEW
-    BaseResponse updateReview(Review review);
+    BaseResponse updateReview(Review review,String companyId);
 
     // DELETE REVIEW
     BaseResponse deleteReview(String reviewId);

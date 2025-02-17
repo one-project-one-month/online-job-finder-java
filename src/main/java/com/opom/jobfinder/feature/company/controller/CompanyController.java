@@ -20,8 +20,8 @@ public class CompanyController {
     }
 
     @PostMapping("/{id}/reviews")
-    public ResponseEntity<BaseResponse> addReview(@RequestBody Review review) {
-        return ResponseEntity.ok(reviewService.addReview(review));
+    public ResponseEntity<BaseResponse> addReview(@RequestBody Review review,@PathVariable String id) {
+        return ResponseEntity.ok(reviewService.addReview(review,id));
     }
 
     @GetMapping("/{id}/reviews")
@@ -30,8 +30,8 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}/reviews")
-    public ResponseEntity<BaseResponse> updateReview(@RequestBody Review review) {
-      return ResponseEntity.ok(reviewService.updateReview(review));
+    public ResponseEntity<BaseResponse> updateReview(@RequestBody Review review,@PathVariable String id) {
+      return ResponseEntity.ok(reviewService.updateReview(review, id));
     }
 
     @DeleteMapping("/{id}/reviews")

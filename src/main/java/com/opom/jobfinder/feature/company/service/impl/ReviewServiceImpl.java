@@ -1,7 +1,9 @@
 package com.opom.jobfinder.feature.company.service.impl;
 
 import com.opom.jobfinder.feature.company.service.ReviewService;
+import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.company.Review;
+import com.opom.jobfinder.model.repo.company.CompanyRepo;
 import com.opom.jobfinder.model.repo.review.ReviewRepo;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
@@ -12,6 +14,7 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,24 +22,41 @@ public class ReviewServiceImpl implements ReviewService {
 
     // CONSTANT VALUES
     private final ReviewRepo reviewRepo;
+    private final CompanyRepo companyRepo;
 
     // CONSTRUCTOR
-    public ReviewServiceImpl(ReviewRepo reviewRepo) {
+    public ReviewServiceImpl(ReviewRepo reviewRepo, CompanyRepo companyRepo) {
         this.reviewRepo = reviewRepo;
+        this.companyRepo = companyRepo;
     }
 
     @Override
-    public BaseResponse addReview(Review review) {
+    public BaseResponse addReview(Review review,String companyId) {
+        if(companyId == null || companyId.length() != 36) {
+            throw new BadRequestException("Company Id is not valid");
+        } else {
+            Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
+            if (company.isPresent()) {
+                review.setCompany(company.get());
+            } else {
+                throw new BadRequestException("Company Not found");
+            }
+        }
         return BaseResponse.of(MessageConstants.SUCCESS,reviewRepo.save(review), Translator.toLocale(MessageConstants.SUCCESS));
     }
 
     @Override
-    public BaseResponse findReviewById(String reviewId) {
-        return BaseResponse.of(MessageConstants.SUCCESS,reviewRepo.findById(UUID.fromString(reviewId)), Translator.toLocale(MessageConstants.SUCCESS));
-    }
-
-    @Override
-    public BaseResponse updateReview(Review review) {
+    public BaseResponse updateReview(Review review,String companyId) {
+        if(companyId == null || companyId.length() != 36) {
+            throw new BadRequestException("Company Id is not valid");
+        } else {
+            Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
+            if (company.isPresent()) {
+                review.setCompany(company.get());
+            } else {
+                throw new BadRequestException("Company Not found");
+            }
+        }
         return BaseResponse.of(MessageConstants.SUCCESS,reviewRepo.save(review), Translator.toLocale(MessageConstants.SUCCESS));
     }
 
