@@ -1,8 +1,10 @@
 package com.opom.jobfinder.feature.company.review.controller;
 
+import com.opom.jobfinder.feature.company.review.dtos.ReviewDTO;
 import com.opom.jobfinder.feature.company.review.service.ReviewService;
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.utility.BaseResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +14,17 @@ public class ReviewController {
 
     // CONSTANT VALUES
     private final ReviewService reviewService;
+    private final ModelMapper modelMapper;
 
     // CONSTRUCTOR
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, ModelMapper modelMapper) {
         this.reviewService = reviewService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/{id}/reviews")
-    public ResponseEntity<BaseResponse> addReview(@RequestBody Review review, @PathVariable String id) {
+    public ResponseEntity<BaseResponse> addReview(@RequestBody ReviewDTO reviewDTO, @PathVariable String id) {
+        Review review = modelMapper.map(reviewDTO, Review.class);
         BaseResponse response = reviewService.save(review,id);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
@@ -39,7 +44,8 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}/reviews")
-    public ResponseEntity<BaseResponse> updateReview(@RequestBody Review review,@PathVariable String id) {
+    public ResponseEntity<BaseResponse> updateReview(@RequestBody ReviewDTO reviewDTO,@PathVariable String id) {
+        Review review = modelMapper.map(reviewDTO, Review.class);
         BaseResponse response = reviewService.update(review, id);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
