@@ -1,13 +1,12 @@
 package com.opom.jobfinder.feature.company.service.impl;
 
+import com.opom.jobfinder.feature.company.review.service.impl.ReviewServiceImpl;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
 import com.opom.jobfinder.model.repo.review.ReviewRepo;
 import com.opom.jobfinder.utility.BaseResponse;
-import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
-import com.opom.jobfinder.utility.exception.BadRequestException;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +27,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(InstancioExtension.class)

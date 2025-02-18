@@ -1,6 +1,6 @@
-package com.opom.jobfinder.feature.company.service.impl;
+package com.opom.jobfinder.feature.company.review.service.impl;
 
-import com.opom.jobfinder.feature.company.service.ReviewService;
+import com.opom.jobfinder.feature.company.review.service.ReviewService;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
@@ -8,7 +8,6 @@ import com.opom.jobfinder.model.repo.review.ReviewRepo;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
-import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;

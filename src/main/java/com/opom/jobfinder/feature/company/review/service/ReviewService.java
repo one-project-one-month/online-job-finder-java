@@ -1,4 +1,4 @@
-package com.opom.jobfinder.feature.company.service;
+package com.opom.jobfinder.feature.company.review.service;
 
 
 import com.opom.jobfinder.model.entity.company.Review;

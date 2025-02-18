@@ -1,6 +1,6 @@
-package com.opom.jobfinder.feature.company.controller;
+package com.opom.jobfinder.feature.company.review.controller;
 
-import com.opom.jobfinder.feature.company.service.ReviewService;
+import com.opom.jobfinder.feature.company.review.service.ReviewService;
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.utility.BaseResponse;
 import org.springframework.http.ResponseEntity;
