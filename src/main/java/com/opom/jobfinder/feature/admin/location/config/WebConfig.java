@@ -1,4 +1,4 @@
-package com.opom.jobfinder.feature.admin.location.configs;
+package com.opom.jobfinder.feature.admin.location.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
