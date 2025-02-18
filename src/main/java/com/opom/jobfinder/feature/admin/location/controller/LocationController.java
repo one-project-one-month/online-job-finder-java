@@ -1,5 +1,6 @@
 package com.opom.jobfinder.feature.admin.location.controller;
 
+import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
 import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.utility.BaseResponse;
@@ -14,13 +15,14 @@ public class LocationController {
     // CONSTANT VALUES
     private final LocationService locationService;
 
+
     // CONSTRUCTOR
     public LocationController(LocationService locationService) {
         this.locationService = locationService;
     }
 
     @PostMapping("/locations")
-    public ResponseEntity<BaseResponse> addLocation(@RequestBody Location location ) {
+    public ResponseEntity<BaseResponse> addLocation(@RequestBody LocationDTO location ) {
         BaseResponse response = locationService.save(location);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
