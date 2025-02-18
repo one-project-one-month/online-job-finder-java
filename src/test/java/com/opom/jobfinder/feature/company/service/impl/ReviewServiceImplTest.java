@@ -7,6 +7,7 @@ import com.opom.jobfinder.model.repo.review.ReviewRepo;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
+import com.opom.jobfinder.utility.exception.BadRequestException;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.BeforeAll;
@@ -66,14 +67,24 @@ class ReviewServiceImplTest {
         String reviewId = String.valueOf(sampleReview.getId());
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
-        BaseResponse result = reviewService.addReview(sampleReview,String.valueOf(validId));
+        BaseResponse result = reviewService.save(sampleReview,String.valueOf(validId));
         assertNotNull(result);
         assertThat(result.errorCode(), is("00000"));
         assertThat(result.message(),is("mocked message"));
         assertThat(result.data(), is(sampleReview));
         verify(reviewRepo, times(1)).save(sampleReview);
         verify(companyRepo, times(1)).findById(UUID.fromString(validId));
+    }
 
+    @Test
+    void addReview_exceptionThrown() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+
+        BaseResponse result = reviewService.save(sampleReview,validId);
+        assertThat(result.data(), is("Company Not Found!"));
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.message(), is("mocked message"));
+        verify(reviewRepo, times(0)).save(sampleReview);
     }
 
     @Test
@@ -83,7 +94,7 @@ class ReviewServiceImplTest {
         String reviewId = String.valueOf(sampleReview.getId());
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
-        BaseResponse result = reviewService.addReview(sampleReview,String.valueOf(validId));
+        BaseResponse result = reviewService.update(sampleReview,String.valueOf(validId));
         assertNotNull(result);
         assertThat(result.errorCode(), is("00000"));
         assertThat(result.message(),is("mocked message"));
@@ -93,23 +104,54 @@ class ReviewServiceImplTest {
     }
 
     @Test
+    void updateReview_exceptionThrown() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+
+        BaseResponse result = reviewService.update(sampleReview,validId);
+        assertThat(result.data(), is("Company Not Found!"));
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.message(), is("mocked message"));
+        verify(reviewRepo, times(0)).save(sampleReview);
+    }
+
+    @Test
     void deleteReview() {
-        doNothing().when(reviewRepo).deleteById(UUID.fromString(validId));
+        when(reviewRepo.findById(UUID.fromString(validId))).thenReturn(Optional.ofNullable(sampleReview));
+        when(reviewRepo.save(sampleReview)).thenReturn(sampleReview);
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
-        reviewRepo.deleteById(UUID.fromString(validId));
+        BaseResponse result = reviewService.delete(validId);
+        assertNotNull(result);
+        assertThat(result.message(), is("mocked message"));
+        assertThat(result.data(), is("Deleted Review Successfully!"));
+        assertThat(result.errorCode(), is("00000"));
+        verify(reviewRepo, times(1)).findById(UUID.fromString(validId));
+        verify(reviewRepo, times(1)).save(sampleReview);
+    }
 
-        verify(reviewRepo, times(1)).deleteById(UUID.fromString(validId));
+    @Test
+    void deleteReview_exceptionThrown() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+
+        BaseResponse result = reviewService.delete(validId);
+        assertNotNull(result);
+        assertThat(result.message(), is("mocked message"));
+        assertThat(result.data(), is("Review Not Found!"));
+        assertThat(result.errorCode(), is("00400"));
+        verify(reviewRepo, times(1)).findById(UUID.fromString(validId));
+        verify(reviewRepo, times(0)).save(sampleReview);
     }
 
     @Test
     void getReviewsByCompany() {
         List<Review> reviews = Instancio.ofList(Review.class).size(5).create();
+        when(companyRepo.findById(any())).thenReturn(Optional.ofNullable(sampleCompany));
         when(reviewRepo.search(any())).thenReturn(Arrays.asList(reviews.toArray()));
         UUID companyId =  sampleCompany.getId();
 
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
-        BaseResponse result = reviewService.getReviewsByCompany(companyId.toString());
+        BaseResponse result = reviewService.getByCompany(companyId.toString());
         assertNotNull(result);
         assertThat(result.errorCode(), is("00000"));
         assertThat(result.data(), is(reviews));
@@ -118,22 +160,45 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    void getAverageReviewFromCompany() {
-        List<Double> mockRatings = List.of(4.5, 3.5, 5.0);
-        when(reviewRepo.search(any())).thenReturn((List) mockRatings);
+    void getReviewsByCompany_exceptionThrown() {
+        UUID companyId =  sampleCompany.getId();
+        List<Review> reviews = Instancio.ofList(Review.class).size(5).create();
+        when(companyRepo.search(any())).thenReturn(Arrays.asList(reviews.toArray()));
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
-        BaseResponse result = reviewService.getAverageReviewFromCompany(validId);
-
-        double expectedAverage = mockRatings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-        expectedAverage = Math.round(expectedAverage * 100.0) / 100.0;
-
-        List<?> actualData = reviewRepo.search(any());
-        System.out.println("Mocked Repo Data: " + actualData);
-
+        BaseResponse result = reviewService.getByCompany(companyId.toString());
         assertNotNull(result);
-        assertThat(result.errorCode(), is("00000") );
-        assertEquals(expectedAverage, (double) result.data(),0.0001);
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.data(), is("Company Not Found!"));
+        assertThat(result.message(), is("mocked message"));
+        verify(reviewRepo, times(0)).search(any());
+    }
 
+    @Test
+    void getAverageReviewFromCompany() {
+        when(reviewRepo.search(any())).thenReturn(List.of(4.5));
+        when(companyRepo.findById(any())).thenReturn(Optional.ofNullable(sampleCompany));
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+        BaseResponse response = reviewService.getAvgFromCompany(validId);
+
+        assertNotNull(response);
+        assertThat(response.errorCode(), is("00000"));
+        assertThat(response.data(),is(4.5));
+        assertThat(response.message(), is("mocked message"));
         verify(reviewRepo, times(1)).search(any());
+    }
+
+    @Test
+    void getAverageReviewFromCompany_exceptionThrown() {
+        UUID companyId =  sampleCompany.getId();
+
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+
+        BaseResponse result = reviewService.getAvgFromCompany(companyId.toString());
+        assertNotNull(result);
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.data(), is("Company Not Found!"));
+        assertThat(result.message(), is("mocked message"));
+        verify(reviewRepo, times(0)).search(any());
     }
 }

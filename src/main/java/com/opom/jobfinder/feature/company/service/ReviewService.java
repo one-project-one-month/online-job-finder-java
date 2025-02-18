@@ -7,17 +7,17 @@ import com.opom.jobfinder.utility.BaseResponse;
 public interface ReviewService {
 
     // ADD REVIEW
-    BaseResponse addReview(Review review,String companyId);
+    BaseResponse save(Review review,String companyId);
 
     // UPDATE REVIEW
-    BaseResponse updateReview(Review review,String companyId);
+    BaseResponse update(Review review,String companyId);
 
     // DELETE REVIEW
-    BaseResponse deleteReview(String reviewId);
+    BaseResponse delete(String reviewId);
 
     // GET REVIEWS BY COMPANY
-    BaseResponse getReviewsByCompany(String companyId);
+    BaseResponse getByCompany(String companyId);
 
     // GET AVERAGE REVIEW FROM COMPANY
-    BaseResponse getAverageReviewFromCompany(String companyId);
+    BaseResponse getAvgFromCompany(String companyId);
 }

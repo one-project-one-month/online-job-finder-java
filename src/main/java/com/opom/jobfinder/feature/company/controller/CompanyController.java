@@ -21,26 +21,51 @@ public class CompanyController {
 
     @PostMapping("/{id}/reviews")
     public ResponseEntity<BaseResponse> addReview(@RequestBody Review review,@PathVariable String id) {
-        return ResponseEntity.ok(reviewService.addReview(review,id));
+        BaseResponse response = reviewService.save(review,id);
+        if(response.errorCode().equals("00000")) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<BaseResponse> getReviews(@PathVariable String id) {
-        return ResponseEntity.ok(reviewService.getReviewsByCompany(id));
+    public ResponseEntity<BaseResponse> getReviewsByCompany(@PathVariable String id) {
+        BaseResponse response = reviewService.getByCompany(id);
+        if(response.errorCode().equals("00000")) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PutMapping("/{id}/reviews")
     public ResponseEntity<BaseResponse> updateReview(@RequestBody Review review,@PathVariable String id) {
-      return ResponseEntity.ok(reviewService.updateReview(review, id));
+        BaseResponse response = reviewService.update(review, id);
+        if(response.errorCode().equals("00000")) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @DeleteMapping("/{id}/reviews")
     public ResponseEntity<BaseResponse> deleteReview(@RequestParam("id") String id) {
-        return ResponseEntity.ok(reviewService.deleteReview(id));
+        BaseResponse response = reviewService.delete(id);
+        if(response.errorCode().equals("00000")) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @GetMapping("/{id}/reviews/avg")
     public ResponseEntity<BaseResponse> getAvgReviewOfCompany(@PathVariable String id) {
-        return ResponseEntity.ok(reviewService.getAverageReviewFromCompany(id));
+        BaseResponse response = reviewService.getAvgFromCompany(id);
+        if(response.errorCode().equals("00000")) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
