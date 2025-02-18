@@ -1,14 +1,7 @@
-package com.opom.jobfinder.feature.admin.service;
+package com.opom.jobfinder.feature.admin.location.service;
 
-import com.opom.jobfinder.model.entity.applicant.Applicant;
-import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
-import com.opom.jobfinder.model.entity.job.Job;
 import com.opom.jobfinder.utility.BaseResponse;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public interface LocationService {
 
