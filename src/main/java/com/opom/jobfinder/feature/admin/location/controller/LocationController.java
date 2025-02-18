@@ -1,6 +1,6 @@
-package com.opom.jobfinder.feature.admin.controller;
+package com.opom.jobfinder.feature.admin.location.controller;
 
-import com.opom.jobfinder.feature.admin.service.LocationService;
+import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.utility.BaseResponse;
 import jakarta.validation.constraints.NotNull;

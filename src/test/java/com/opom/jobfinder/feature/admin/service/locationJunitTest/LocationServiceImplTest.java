@@ -1,5 +1,6 @@
-package com.opom.jobfinder.feature.admin.service.impl;
+package com.opom.jobfinder.feature.admin.service.locationJunitTest;
 
+import com.opom.jobfinder.feature.admin.location.service.impl.LocationServiceImpl;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.model.entity.job.Job;

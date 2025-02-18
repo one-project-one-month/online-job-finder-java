@@ -1,7 +1,6 @@
-package com.opom.jobfinder.feature.admin.service.impl;
+package com.opom.jobfinder.feature.admin.location.service.impl;
 
-import com.opom.jobfinder.feature.admin.service.LocationService;
-import com.opom.jobfinder.model.entity.applicant.Applicant;
+import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.model.entity.job.Job;
@@ -12,14 +11,12 @@ import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.BaseService;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
-import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class LocationServiceImpl extends BaseService implements LocationService {
