@@ -13,19 +13,16 @@ import java.util.UUID;
 public interface LocationService {
 
     // CREATE LOCATION BY ADMIN
-    BaseResponse createLocation(Location location);
+    BaseResponse save(Location location);
 
     // GET ALL LOCATIONS (GENERAL PURPOSE USE)
-    BaseResponse getAllLocations();
-
-    // GET LOCATION BY ID (WATCH DETAIL)
-    BaseResponse getLocationById(String id);
+    BaseResponse getAll();
 
     // UPDATE LOCATION BY ID (UPDATE BY ADMIN)
-    BaseResponse updateLocation(Location locationDetails);
+    BaseResponse update(Location locationDetails);
 
     // DELETE LOCATION (DELETE BY ADMIN)
-    BaseResponse deleteLocation(String id);
+    BaseResponse delete(String id);
 
     // GET APPLICANTS BY LOCATION ID (FOR ADMIN DASHBOARD)
 //    List<Applicant> getApplicantsByLocationId(String locationId);
