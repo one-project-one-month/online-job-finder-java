@@ -51,7 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
             return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Id is not valid!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         } else {
             Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
-            if (company.isPresent()) {
+            Optional<Review> review1 = reviewRepo.findById(review.getId());
+            if (company.isPresent() && review1.isPresent()) {
                 review.setCompany(company.get());
             } else {
                 return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));

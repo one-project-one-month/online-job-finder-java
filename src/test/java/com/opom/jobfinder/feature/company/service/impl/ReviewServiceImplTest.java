@@ -51,7 +51,7 @@ class ReviewServiceImplTest {
     @BeforeAll
     static void setUpAll(){
         mockedStatic = mockStatic(Translator.class);
-        validId = "b90a273b-870c-4533-a661-0962ab8ecdf1";
+        validId = "6bb5a9c9-4d02-4704-b254-c5d7bb6d6257";
     }
     @BeforeEach
     void setUp() {
@@ -79,7 +79,7 @@ class ReviewServiceImplTest {
     @Test
     void addReview_exceptionThrown() {
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
-
+        System.out.println(validId);
         BaseResponse result = reviewService.save(sampleReview,validId);
         assertThat(result.data(), is("Company Not Found!"));
         assertThat(result.errorCode(), is("00400"));
@@ -88,10 +88,20 @@ class ReviewServiceImplTest {
     }
 
     @Test
+    void addReview_exceptionThrown_2() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+        BaseResponse result = reviewService.save(sampleReview,"23556-ee16-11ef-8daa-325096b39f47");
+        assertThat(result.data(), is("Company Id is not valid!"));
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.message(), is("mocked message"));
+        verify(reviewRepo, times(0)).save(sampleReview);
+    }
+
+    @Test
     void updateReview() {
         when(reviewRepo.save(sampleReview)).thenReturn(sampleReview);
-        when(companyRepo.findById(UUID.fromString(validId))).thenReturn(Optional.ofNullable(sampleCompany));
-        String reviewId = String.valueOf(sampleReview.getId());
+        when(companyRepo.findById(any())).thenReturn(Optional.ofNullable(sampleCompany));
+        when(reviewRepo.findById(any())).thenReturn(Optional.ofNullable(sampleReview));
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
         BaseResponse result = reviewService.update(sampleReview,String.valueOf(validId));
@@ -114,6 +124,16 @@ class ReviewServiceImplTest {
         verify(reviewRepo, times(0)).save(sampleReview);
     }
 
+    @Test
+    void updateReview_exceptionThrown_2() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+
+        BaseResponse result = reviewService.update(sampleReview,"23556-ee16-11ef-8daa-325096b39f47");
+        assertThat(result.data(), is("Company Id is not valid!"));
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.message(), is("mocked message"));
+        verify(reviewRepo, times(0)).save(sampleReview);
+    }
     @Test
     void deleteReview() {
         when(reviewRepo.findById(UUID.fromString(validId))).thenReturn(Optional.ofNullable(sampleReview));
