@@ -17,6 +17,8 @@ public abstract class AbstractEntity {
     @UpdateTimestamp
     protected LocalDateTime updatedAt;
 
+    protected boolean status;
+
     @Version
     protected int version;
 }

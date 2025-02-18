@@ -37,40 +37,48 @@ public class LocationServiceImpl extends BaseService implements LocationService 
     }
 
     @Override
-    public BaseResponse createLocation(Location location) {
-        return BaseResponse.of(MessageConstants.SUCCESS, locationRepo.save(location), Translator.toLocale(MessageConstants.SUCCESS));
-    }
-
-    @Override
-    public BaseResponse getAllLocations() {
+    public BaseResponse save(Location location) {
         try {
             List<Location> locations = locationRepo.search(cb -> {
                 CriteriaQuery<Location> query = cb.createQuery(Location.class);
                 Root<Location> root = query.from(Location.class);
-                query.select(root);
+                query.select(root).where(cb.equal(root.get("location").get("name"), location.getName()));
                 return query;
             });
-            return successResponse(locations);
-
+            if(!locations.isEmpty()) {
+                return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Already Exist!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            }
+            return successResponse(locationRepo.save(location));
         } catch (Exception e) {
-            throw new BadRequestException("Searching Location Failed!");
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Save Location Failed"+e,Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         }
     }
 
     @Override
-    public BaseResponse getLocationById(String id) {
-        return BaseResponse.of(MessageConstants.SUCCESS, locationRepo.findById(Integer.parseInt(id)), Translator.toLocale(MessageConstants.SUCCESS));
+    public BaseResponse getAll() {
+        return successResponse(locationRepo.findAll());
     }
 
     @Override
-    public BaseResponse updateLocation(Location locationDetails) {
-        return BaseResponse.of(MessageConstants.SUCCESS, locationRepo.save(locationDetails), Translator.toLocale(MessageConstants.SUCCESS));
+    public BaseResponse update(Location locationDetails) {
+        Optional<Location> originLocation = locationRepo.findById(locationDetails.getId());
+        if(originLocation.isPresent()) {
+            return successResponse(locationRepo.save(locationDetails));
+        } else {
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+        }
     }
 
     @Override
-    public BaseResponse deleteLocation(String id) {
-        locationRepo.deleteById(Integer.parseInt(id));
-        return BaseResponse.of(MessageConstants.SUCCESS, "Delete Location Successfully!", Translator.toLocale(MessageConstants.SUCCESS));
+    public BaseResponse delete(String id) {
+        Optional<Location> originLocation = locationRepo.findById(Integer.valueOf(id));
+        if(originLocation.isPresent()) {
+            originLocation.get().setStatus(false);
+            locationRepo.save(originLocation.get());
+            return successResponse("Delete Location Successfully!");
+        } else {
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+        }
     }
 
 //    @Override
@@ -80,37 +88,33 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
     @Override
     public BaseResponse getJobsByLocation(String locationId) {
-        try {
+        Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
+        if(location.isPresent()) {
             List<Job> jobs = jobRepo.search(cb -> {
                 CriteriaQuery<Job> query = cb.createQuery(Job.class);
                 Root<Job> root = query.from(Job.class);
                 query.select(root).where(cb.equal(root.get("location").get("id"), locationId));
                 return query;
             });
-
-            return BaseResponse.of(MessageConstants.SUCCESS, jobs, Translator.toLocale(MessageConstants.SUCCESS));
-
-        }catch (IllegalArgumentException e) {
-            throw new BadRequestException("Invalid UUID format for location ID: " + Integer.parseInt(locationId));
-        } catch (Exception e) {
-            throw new BadRequestException("Searching Jobs by Location Failed!"+e.getMessage()+e.getClass());
+            return successResponse(jobs);
+        } else {
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         }
     }
 
     @Override
     public BaseResponse getCompaniesByLocation(String locationId) {
-        try {
+        Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
+        if(location.isPresent()) {
             List<Company> companies = companyRepo.search(cb -> {
                 CriteriaQuery<Company> query = cb.createQuery(Company.class);
                 Root<Company> root = query.from(Company.class);
                 query.select(root).where(cb.equal(root.get("location").get("id"), Integer.parseInt(locationId)));
                 return query;
             });
-
-            return BaseResponse.of(MessageConstants.SUCCESS, companies, Translator.toLocale(MessageConstants.SUCCESS));
-
-        } catch (Exception e) {
-            throw new BadRequestException("Searching Companies by Location Failed!");
+            return successResponse(companies);
+        } else {
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         }
     }
 }
