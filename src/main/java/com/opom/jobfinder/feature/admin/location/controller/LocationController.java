@@ -5,6 +5,7 @@ import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.utility.BaseResponse;
 import jakarta.validation.constraints.NotNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +15,17 @@ public class LocationController {
 
     // CONSTANT VALUES
     private final LocationService locationService;
-
+    private final ModelMapper modelMapper;
 
     // CONSTRUCTOR
-    public LocationController(LocationService locationService) {
+    public LocationController(LocationService locationService, ModelMapper modelMapper) {
         this.locationService = locationService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/locations")
-    public ResponseEntity<BaseResponse> addLocation(@RequestBody LocationDTO location ) {
+    public ResponseEntity<BaseResponse> addLocation(@RequestBody LocationDTO locationDTO ) {
+        Location location = modelMapper.map(locationDTO, Location.class);
         BaseResponse response = locationService.save(location);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
@@ -37,7 +40,8 @@ public class LocationController {
     }
 
     @PutMapping("/locations")
-    public ResponseEntity<BaseResponse> updateLocationById(@RequestBody Location location) {
+    public ResponseEntity<BaseResponse> updateLocationById(@RequestBody LocationDTO locationDTO) {
+        Location location = modelMapper.map(locationDTO, Location.class);
         BaseResponse response = locationService.update(location);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
