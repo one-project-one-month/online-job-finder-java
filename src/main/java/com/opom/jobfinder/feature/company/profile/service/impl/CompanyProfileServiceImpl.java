@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.UUID;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -35,6 +37,12 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 //        nextVersion(company);
         companyRepo.saveAndFlush(company);
         return CompanyProfile.from(company);
+    }
+
+    @Override
+    public CompanyProfile findCompanyProfileById(UUID id) {
+        return companyRepo.findById(id).map(CompanyProfile::from)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid id"));
     }
 
 //    private void nextVersion(Company company) {

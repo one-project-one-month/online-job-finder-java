@@ -7,14 +7,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("recruiter/me")
+@RequestMapping("recruiter")
 public class CompanyProfileController {
 
     private final CompanyProfileService service;
 
-    @GetMapping
+    @GetMapping("{id}")
+    ResponseEntity<BaseResponse> profile(@PathVariable("id") UUID id) {
+        var data = service.findCompanyProfileById(id);
+        return ResponseEntity.ok(BaseResponse.of(null, data, "Company profile"));
+    }
+
+    @GetMapping("me")
     ResponseEntity<BaseResponse> profile() {
         var data = service.findCompanyProfileByEmail(null);
         return ResponseEntity.ok(BaseResponse.of(null, data, "Company profile"));
