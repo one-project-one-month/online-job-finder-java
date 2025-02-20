@@ -24,6 +24,7 @@ public class Applicant extends AbstractEntity {
     private String address;
     private String description;
     private int currentResumeId;
+    private String fullname;
 
     @OneToOne
     @PrimaryKeyJoinColumn
