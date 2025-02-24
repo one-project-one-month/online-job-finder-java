@@ -1,5 +1,6 @@
 package com.opom.jobfinder.feature.admin.location.service.impl;
 
+import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
 import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
@@ -39,7 +40,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             List<Location> locations = locationRepo.search(cb -> {
                 CriteriaQuery<Location> query = cb.createQuery(Location.class);
                 Root<Location> root = query.from(Location.class);
-                query.select(root).where(cb.equal(root.get("location").get("name"), location.getName()));
+                query.select(root).where(cb.equal(root.get("name"), location.getName()));
                 return query;
             });
             if(!locations.isEmpty()) {
@@ -47,7 +48,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             }
             return successResponse(locationRepo.save(location));
         } catch (Exception e) {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Save Location Failed"+e,Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Save Location Failed "+e,Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         }
     }
 
@@ -57,9 +58,10 @@ public class LocationServiceImpl extends BaseService implements LocationService 
     }
 
     @Override
-    public BaseResponse update(Location locationDetails) {
-        Optional<Location> originLocation = locationRepo.findById(locationDetails.getId());
+    public BaseResponse update(Location locationDetails,int id) {
+        Optional<Location> originLocation = locationRepo.findById(id);
         if(originLocation.isPresent()) {
+            locationDetails.setId(id);
             return successResponse(locationRepo.save(locationDetails));
         } else {
             return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
@@ -124,5 +126,15 @@ public class LocationServiceImpl extends BaseService implements LocationService 
         }else {
             return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         }
+    }
+
+    @Override
+    public Location mapLocationDTOToEntity(LocationDTO locationDTO) {
+        Location location = new Location();
+
+        location.setName(locationDTO.name());
+        location.setDescription(locationDTO.description());
+        location.setStatus(true);
+        return location;
     }
 }

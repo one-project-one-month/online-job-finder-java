@@ -1,5 +1,6 @@
 package com.opom.jobfinder.feature.admin.location.service;
 
+import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.utility.BaseResponse;
 
@@ -12,7 +13,7 @@ public interface LocationService {
     BaseResponse getAll();
 
     // UPDATE LOCATION BY ID (UPDATE BY ADMIN)
-    BaseResponse update(Location locationDetails);
+    BaseResponse update(Location locationDetails,int id);
 
     // DELETE LOCATION (DELETE BY ADMIN)
     BaseResponse delete(String id);
@@ -28,4 +29,6 @@ public interface LocationService {
 
     // GET LOCATION BY ID
     BaseResponse getLocationById(int id);
+
+    Location mapLocationDTOToEntity(LocationDTO locationDTO);
 }

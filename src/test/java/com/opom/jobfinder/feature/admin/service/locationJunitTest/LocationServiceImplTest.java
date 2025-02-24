@@ -111,7 +111,7 @@ class LocationServiceImplTest {
         when(locationRepo.save(sampleLocation)).thenReturn(sampleLocation);
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
         when(locationRepo.findById(any())).thenReturn(Optional.ofNullable(sampleLocation));
-        BaseResponse result = locationService.update(sampleLocation);
+        BaseResponse result = locationService.update(sampleLocation,validId);
 
         assertNotNull(result);
         assertThat(result.errorCode(), is("00000"));
@@ -125,7 +125,7 @@ class LocationServiceImplTest {
     void updateLocation_exceptionThrown() {
         mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
-        BaseResponse result = locationService.update(sampleLocation);
+        BaseResponse result = locationService.update(sampleLocation,validId);
         assertThat(result.data(), is("Location Not Found!"));
         assertThat(result.errorCode(), is("00400"));
         assertThat(result.message(), is("mocked message"));

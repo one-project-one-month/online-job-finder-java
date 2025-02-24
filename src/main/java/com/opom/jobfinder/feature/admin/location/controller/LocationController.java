@@ -15,17 +15,15 @@ public class LocationController {
 
     // CONSTANT VALUES
     private final LocationService locationService;
-    private final ModelMapper modelMapper;
 
     // CONSTRUCTOR
-    public LocationController(LocationService locationService, ModelMapper modelMapper) {
+    public LocationController(LocationService locationService) {
         this.locationService = locationService;
-        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/locations")
     public ResponseEntity<BaseResponse> addLocation(@RequestBody LocationDTO locationDTO ) {
-        Location location = modelMapper.map(locationDTO, Location.class);
+        Location location = locationService.mapLocationDTOToEntity(locationDTO);
         BaseResponse response = locationService.save(location);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
@@ -40,9 +38,9 @@ public class LocationController {
     }
 
     @PutMapping("/locations")
-    public ResponseEntity<BaseResponse> updateLocationById(@RequestBody LocationDTO locationDTO) {
-        Location location = modelMapper.map(locationDTO, Location.class);
-        BaseResponse response = locationService.update(location);
+    public ResponseEntity<BaseResponse> updateLocationById(@RequestBody LocationDTO locationDTO,@RequestParam("id") @NotNull int id) {
+        Location location = locationService.mapLocationDTOToEntity(locationDTO);
+        BaseResponse response = locationService.update(location,id);
         if(response.errorCode().equals("00000")) {
             return ResponseEntity.ok(response);
         } else {
