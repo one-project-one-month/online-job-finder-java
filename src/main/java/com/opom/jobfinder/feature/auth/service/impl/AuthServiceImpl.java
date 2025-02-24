@@ -89,7 +89,6 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
-
     @Override
     public BaseResponse signin(AuthRequest request) {
         authenticationManager.authenticate(

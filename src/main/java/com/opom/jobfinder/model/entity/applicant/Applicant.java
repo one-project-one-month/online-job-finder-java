@@ -1,5 +1,7 @@
 package com.opom.jobfinder.model.entity.applicant;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opom.jobfinder.model.entity.AbstractEntity;
 import com.opom.jobfinder.model.entity.account.Account;
 import com.opom.jobfinder.model.entity.company.Review;
@@ -15,13 +17,15 @@ import java.util.UUID;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Applicant extends AbstractEntity {
 
     @Id
     @Column(name = "account_id")
     private UUID id;
+
     private String phone;
-    private String address;
+    private String address; 
     private String description;
     private int currentResumeId;
     private String fullname;
@@ -54,4 +58,6 @@ public class Applicant extends AbstractEntity {
     
     @OneToMany(mappedBy = "applicant")
     private List<ApplicantJobCategory> applicantJobCategories;
+
+ 
 }

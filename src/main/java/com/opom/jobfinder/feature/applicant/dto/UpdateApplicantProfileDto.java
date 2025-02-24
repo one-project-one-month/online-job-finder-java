@@ -5,14 +5,14 @@ import java.time.LocalDate;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.NotNull;
 
 public record UpdateApplicantProfileDto(
-        @NotBlank(message = "isInformationCompleted is required") boolean isInformationCompleted ,
-        @NotBlank(message = "full name is required") String fullname,
-        @NotBlank(message = "phone is required") String phone,
-        @NotBlank(message = "locationId is required") String locationId,
-        @NotBlank(message = "job categoryIds is required") String jobCategoryIds,
+        @NotNull(message = "full name is required") String fullname,
+        @NotNull(message = "phone is required") String phone,
+        @NotNull(message = "location_id is required") Integer location_id,
+        // @NotBlank(message = "job categoryIds is required") String jobCategoryIds,
+
         @Nullable String description,
         @Nullable String resumeId,
         @Nullable EducationDto education,
@@ -22,7 +22,7 @@ public record UpdateApplicantProfileDto(
                   @NotBlank(message = "degree is required")              String degree,
                   @NotBlank(message = "field is required")               String field,
                   @NotBlank(message = "description is required")         String description,
-                  @NotBlank(message = "attending is required")           boolean attending
+                  @NotBlank(message = "attending is required")           Boolean attending
         ){}
 
         private record ExperienceDto (
@@ -34,6 +34,6 @@ public record UpdateApplicantProfileDto(
                          @NotBlank(message = "jobType is required")           String jobType,
                          @NotBlank(message = "start At is required")          LocalDate startAt,
                          @Nullable                                            LocalDate endAt,
-                         @NotBlank(message = "working is required")           boolean working
+                         @NotBlank(message = "working is required")           Boolean working
         ){}
 }

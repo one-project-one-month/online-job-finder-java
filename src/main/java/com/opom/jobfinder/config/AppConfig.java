@@ -1,5 +1,6 @@
 package com.opom.jobfinder.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opom.jobfinder.model.repo.account.AccountRepo;
 import com.opom.jobfinder.utility.Translator;
 import com.opom.jobfinder.utility.exception.UnexpectedException;
@@ -30,11 +31,17 @@ import static com.opom.jobfinder.utility.MessageConstants.USER_DOES_NOT_EXIST;
 @Slf4j
 public class AppConfig {
     private final AccountRepo accountRepo;
+
+    @Bean
+    public ObjectMapper objectMapper (){
+        return new ObjectMapper();
+    }
+    
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> accountRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(Translator.toLocale(USER_DOES_NOT_EXIST, email)));
-    }
+}
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
