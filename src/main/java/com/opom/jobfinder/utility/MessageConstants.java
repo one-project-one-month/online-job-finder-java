@@ -10,4 +10,5 @@ public class MessageConstants {
     public static final String UNAUTHORIZED_ERROR = "00401";
     public static final String ACCESS_DENIED_ERROR = "00403";
     public static final String USER_DOES_NOT_EXIST = "00002";
+    public static final String NOT_FOUND_ERROR = "00404";
 }
