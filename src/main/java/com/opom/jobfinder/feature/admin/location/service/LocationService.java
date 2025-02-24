@@ -25,4 +25,7 @@ public interface LocationService {
 
     // GET COMPANIES BY LOCATION ID (FOR APPLICANT && ADMIN DASHBOARD)
     BaseResponse getCompaniesByLocation(String locationId);
+
+    // GET LOCATION BY ID
+    BaseResponse getLocationById(int id);
 }

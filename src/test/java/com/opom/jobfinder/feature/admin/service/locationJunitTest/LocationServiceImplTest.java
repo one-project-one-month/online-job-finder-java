@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
+import org.mockito.verification.VerificationMode;
 
 import java.util.*;
 
@@ -216,5 +217,30 @@ class LocationServiceImplTest {
         assertThat(result.data(), is("Location Not Found!"));
         assertThat(result.message(), is("mocked message"));
         verify(locationRepo, times(0)).search(any());
+    }
+
+    @Test
+    void getLocationById() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+        when(locationRepo.findById(validId)).thenReturn(Optional.of(sampleLocation));
+
+        BaseResponse result = locationService.getLocationById(validId);
+        assertNotNull(result);
+        assertThat(result.errorCode(), is("00000"));
+        assertThat(result.data(), is(sampleLocation));
+        assertThat(result.message(), is("mocked message"));
+        verify(locationRepo, times(1)).findById(validId);
+    }
+
+    @Test
+    void getLocationById_exceptionThrown() {
+        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
+
+        BaseResponse result = locationService.getLocationById(validId);
+        assertNotNull(result);
+        assertThat(result.errorCode(), is("00400"));
+        assertThat(result.data(), is("Location Not Found!"));
+        assertThat(result.message(), is("mocked message"));
+        verify(locationRepo, times(1)).findById(validId);
     }
 }

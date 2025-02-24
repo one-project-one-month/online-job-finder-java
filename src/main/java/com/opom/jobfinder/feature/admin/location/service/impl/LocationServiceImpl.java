@@ -114,4 +114,15 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
         }
     }
+
+    @Override
+    public BaseResponse getLocationById(int id) {
+        Optional<Location> optionalLocation = locationRepo.findById(id);
+        if(optionalLocation.isPresent()) {
+            Location location = optionalLocation.get();
+            return successResponse(location);
+        }else {
+            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+        }
+    }
 }
