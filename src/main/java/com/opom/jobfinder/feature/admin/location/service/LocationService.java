@@ -1,6 +1,7 @@
 package com.opom.jobfinder.feature.admin.location.service;
 
 import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocation;
+import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.GetJobByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
 import com.opom.jobfinder.model.entity.company.Company;
@@ -31,8 +32,10 @@ public interface LocationService {
     List<GetJobByLocationDTO> getJobsByLocation(String locationID);
 
     // GET COMPANIES BY LOCATION ID (FOR APPLICANT && ADMIN DASHBOARD)
-    List<GetCompanyByLocation> getCompaniesByLocation(String locationId);
+    List<GetCompanyByLocationDTO> getCompaniesByLocation(String locationId);
 
     // GET LOCATION BY ID
     Location getLocationById(int id);
+
+    Location mapLocationDTOToEntity(LocationDTO locationDTO);
 }

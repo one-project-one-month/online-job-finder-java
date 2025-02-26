@@ -1,7 +1,9 @@
 package com.opom.jobfinder.feature.admin.location.service.impl;
 
+import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.GetJobByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
+import com.opom.jobfinder.feature.admin.location.mapper.LocationManager;
 import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
@@ -15,25 +17,23 @@ import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class LocationServiceImpl extends BaseService implements LocationService {
 
     // CONSTANT VALUES
     private final LocationRepo locationRepo;
     private final CompanyRepo companyRepo;
     private final JobRepo jobRepo;
-
-    // CONSTRUCTOR
-    public LocationServiceImpl(LocationRepo locationRepo, CompanyRepo companyRepo, JobRepo jobRepo) {
-        this.locationRepo = locationRepo;
-        this.companyRepo = companyRepo;
-        this.jobRepo = jobRepo;
-    }
+    private final LocationManager locationManager;
 
     @Override
     public Location save(Location location) {
@@ -82,14 +82,25 @@ public class LocationServiceImpl extends BaseService implements LocationService 
     public List<GetJobByLocationDTO> getJobsByLocation(String locationId) {
         Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
         if(location.isPresent()) {
+            List<Job> jobs = jobRepo.search(cb -> {
+                CriteriaQuery<Job> query = cb.createQuery(Job.class);
+                Root<Job> root = query.from(Job.class);
+                query.select(root).where(cb.equal(root.get("location").get("id"), locationId));
+                return query;
+            });
+            List<GetJobByLocationDTO> jobByLocationDTOS = new ArrayList<>();
+            for (Job job : jobs) {
+                jobByLocationDTOS.add(locationManager.toGetJobByLocationDTO(job));
+            }
 
+            return jobByLocationDTOS;
         } else {
             throw new IllegalArgumentException("Location not found!");
         }
     }
 
     @Override
-    public BaseResponse getCompaniesByLocation(String locationId) {
+    public List<GetCompanyByLocationDTO> getCompaniesByLocation(String locationId) {
         Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
         if(location.isPresent()) {
             List<Company> companies = companyRepo.search(cb -> {
@@ -98,24 +109,27 @@ public class LocationServiceImpl extends BaseService implements LocationService 
                 query.select(root).where(cb.equal(root.get("location").get("id"), Integer.parseInt(locationId)));
                 return query;
             });
-            return successResponse(companies);
+            List<GetCompanyByLocationDTO> companyByLocationDTOS = new ArrayList<>();
+            for (Company company : companies) {
+                companyByLocationDTOS.add(locationManager.toGetCompanyByLocation(company));
+            }
+
+            return companyByLocationDTOS;
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new IllegalArgumentException("Location not found!");
         }
     }
 
     @Override
-    public BaseResponse getLocationById(int id) {
+    public Location getLocationById(int id) {
         Optional<Location> optionalLocation = locationRepo.findById(id);
         if(optionalLocation.isPresent()) {
-            Location location = optionalLocation.get();
-            return successResponse(location);
+            return optionalLocation.get();
         }else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new IllegalArgumentException("Location not found!");
         }
     }
 
-    @Override
     public Location mapLocationDTOToEntity(LocationDTO locationDTO) {
         Location location = new Location();
 
