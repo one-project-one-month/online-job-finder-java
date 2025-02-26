@@ -1,7 +1,6 @@
 package com.opom.jobfinder.utility;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
 
 public record BaseResponse (
