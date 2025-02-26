@@ -1,5 +1,6 @@
 package com.opom.jobfinder.feature.admin.location.service.impl;
 
+import com.opom.jobfinder.feature.admin.location.dtos.GetJobByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
 import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.company.Company;
@@ -35,48 +36,40 @@ public class LocationServiceImpl extends BaseService implements LocationService 
     }
 
     @Override
-    public BaseResponse save(Location location) {
-        try {
-            List<Location> locations = locationRepo.search(cb -> {
-                CriteriaQuery<Location> query = cb.createQuery(Location.class);
-                Root<Location> root = query.from(Location.class);
-                query.select(root).where(cb.equal(root.get("name"), location.getName()));
-                return query;
-            });
-            if(!locations.isEmpty()) {
-                return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Already Exist!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
-            }
-            return successResponse(locationRepo.save(location));
-        } catch (Exception e) {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Save Location Failed "+e,Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
-        }
+    public Location save(Location location) {
+
+        locationRepo.findByName(location.getName())
+                        .ifPresent(existingLocation -> {
+                            throw new IllegalArgumentException("Location already exist!");
+                        });
+
+        return locationRepo.save(location);
     }
 
     @Override
-    public BaseResponse getAll() {
-        return successResponse(locationRepo.findAll());
+    public List<Location> getAll() {
+        return locationRepo.findAll();
     }
 
     @Override
-    public BaseResponse update(Location locationDetails,int id) {
+    public Location update(Location locationDetails,int id) {
         Optional<Location> originLocation = locationRepo.findById(id);
         if(originLocation.isPresent()) {
             locationDetails.setId(id);
-            return successResponse(locationRepo.save(locationDetails));
+            return locationRepo.save(locationDetails);
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new IllegalArgumentException("Location not found!");
         }
     }
 
     @Override
-    public BaseResponse delete(String id) {
+    public void delete(String id) {
         Optional<Location> originLocation = locationRepo.findById(Integer.valueOf(id));
         if(originLocation.isPresent()) {
             originLocation.get().setStatus(false);
             locationRepo.save(originLocation.get());
-            return successResponse("Delete Location Successfully!");
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new IllegalArgumentException("Location delete failed!");
         }
     }
 
@@ -86,18 +79,12 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 //    }
 
     @Override
-    public BaseResponse getJobsByLocation(String locationId) {
+    public List<GetJobByLocationDTO> getJobsByLocation(String locationId) {
         Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
         if(location.isPresent()) {
-            List<Job> jobs = jobRepo.search(cb -> {
-                CriteriaQuery<Job> query = cb.createQuery(Job.class);
-                Root<Job> root = query.from(Job.class);
-                query.select(root).where(cb.equal(root.get("location").get("id"), locationId));
-                return query;
-            });
-            return successResponse(jobs);
+
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new IllegalArgumentException("Location not found!");
         }
     }
 
