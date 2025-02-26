@@ -1,6 +1,6 @@
 package com.opom.jobfinder.feature.admin.location.service;
 
-import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocation;
+import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.GetJobByLocationDTO;
 import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;

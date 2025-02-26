@@ -6,6 +6,6 @@ public record GetCompanyByLocationDTO(
         String companyName,
         String address,
         String description,
-        UUID locationId,
+        int locationId,
         double avgReview
 ) {}

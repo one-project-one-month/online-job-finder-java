@@ -15,9 +15,11 @@ import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.BaseService;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
+import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class LocationServiceImpl extends BaseService implements LocationService {
 
     // CONSTANT VALUES
@@ -40,7 +43,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
         locationRepo.findByName(location.getName())
                         .ifPresent(existingLocation -> {
-                            throw new IllegalArgumentException("Location already exist!");
+                            throw new BadRequestException("Location already exist!");
                         });
 
         return locationRepo.save(location);
@@ -58,7 +61,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             locationDetails.setId(id);
             return locationRepo.save(locationDetails);
         } else {
-            throw new IllegalArgumentException("Location not found!");
+            throw new BadRequestException("Location not found!");
         }
     }
 
@@ -69,7 +72,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             originLocation.get().setStatus(false);
             locationRepo.save(originLocation.get());
         } else {
-            throw new IllegalArgumentException("Location delete failed!");
+            throw new BadRequestException("Location delete failed!");
         }
     }
 
@@ -95,7 +98,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
             return jobByLocationDTOS;
         } else {
-            throw new IllegalArgumentException("Location not found!");
+            throw new BadRequestException("Location not found!");
         }
     }
 
@@ -116,7 +119,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 
             return companyByLocationDTOS;
         } else {
-            throw new IllegalArgumentException("Location not found!");
+            throw new BadRequestException("Location not found!");
         }
     }
 
@@ -126,7 +129,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
         if(optionalLocation.isPresent()) {
             return optionalLocation.get();
         }else {
-            throw new IllegalArgumentException("Location not found!");
+            throw new BadRequestException("Location not found!");
         }
     }
 
