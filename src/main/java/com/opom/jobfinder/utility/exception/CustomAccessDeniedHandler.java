@@ -26,10 +26,12 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         BaseResponse customResponse = BaseResponse.of(MessageConstants.ACCESS_DENIED_ERROR, null, Translator.toLocale(MessageConstants.ACCESS_DENIED_ERROR));
         String jsonResponse = objectMapper.writeValueAsString(customResponse);
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write(jsonResponse);
+        if (!response.isCommitted()) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write(jsonResponse);
+        }
     }
 }
 
