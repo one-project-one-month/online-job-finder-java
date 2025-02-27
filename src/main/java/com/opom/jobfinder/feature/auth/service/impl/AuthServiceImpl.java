@@ -10,8 +10,6 @@ import com.opom.jobfinder.model.entity.account.Account;
 import com.opom.jobfinder.model.entity.account.Role;
 import com.opom.jobfinder.model.repo.account.AccountRepo;
 import com.opom.jobfinder.model.repo.account.RoleRepo;
-import com.opom.jobfinder.utility.BaseResponse;
-import com.opom.jobfinder.utility.BaseService;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
 import com.opom.jobfinder.utility.exception.AccessDeniedException;
@@ -22,21 +20,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
+
+import static com.opom.jobfinder.utility.MessageConstants.USER_DOES_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl extends BaseService implements AuthService {
+public class AuthServiceImpl implements AuthService {
     @Value("${jwt.jwtExpiration}")
     private Long jwtExpiration;
 
@@ -51,11 +51,11 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BaseResponse signup(RegisterRequest request) {
+    public AuthResponse signup(RegisterRequest request) {
         Optional<Role> roleOptional = roleRepo.findById(request.role());
         Role role = roleOptional.orElseThrow(() -> new BadRequestException("Role id does not exist."));
 
-        if(role.getName().contains("ADMIN")) throw new AccessDeniedException("You are not allowed to create admin user.");
+        if(role.getName().contains("ADMIN")) throw new AccessDeniedException(Translator.toLocale(MessageConstants.ACCESS_DENIED_ERROR));
 
         Account account = Account.builder()
                 .name(request.name())
@@ -68,7 +68,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     }
 
     @Override
-    public BaseResponse refresh(HttpServletRequest request) {
+    public AuthResponse refresh(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
@@ -81,16 +81,28 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         TokenType tokenType = jwtService.extractClaim(refreshToken, "tokenType", TokenType.class);
         if (userEmail != null && tokenType.equals(TokenType.REFRESH_TOKEN)) {
             Account account = accountRepo.findByEmail(userEmail)
-                    .orElseThrow(() -> new BadCredentialsException("Unauthorized."));
+                    .orElseThrow(() -> new BadRequestException(Translator.toLocale(USER_DOES_NOT_EXIST, userEmail)));
             if (jwtService.isTokenValid(refreshToken, account)) {
-                return successResponse(getAuthResponse(account));
+                return getAuthResponse(account);
             }
         }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        throw new UnauthorizedException(Translator.toLocale(MessageConstants.UNAUTHORIZED_ERROR));
     }
 
     @Override
-    public BaseResponse signin(AuthRequest request) {
+    public UUID getLoginUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof Account) {
+                return ((Account) principal).getId();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public AuthResponse signin(AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
@@ -98,14 +110,14 @@ public class AuthServiceImpl extends BaseService implements AuthService {
                 )
         );
         Account account = accountRepo.findByEmail(request.email())
-                .orElseThrow(() -> new BadCredentialsException("Unauthorized."));
+                .orElseThrow(() -> new BadRequestException(Translator.toLocale(USER_DOES_NOT_EXIST, request.email())));
         return getAuthResponse(account);
     }
 
-    private BaseResponse getAuthResponse(Account account) {
+    private AuthResponse getAuthResponse(Account account) {
         String jwtToken = jwtService.generateToken(account, jwtExpiration);
         String refreshToken = jwtService.generateRefreshToken(account, refreshExpiration);
         Date expiredAt = new Date(System.currentTimeMillis() + jwtExpiration);
-        return successResponse(AuthResponse.of(jwtToken, expiredAt, refreshToken));
+        return AuthResponse.of(jwtToken, expiredAt, refreshToken);
     }
 }
