@@ -97,9 +97,7 @@ public class APIExceptionHandler {
         return BaseResponse.of(
                 MessageConstants.UNAUTHORIZED_ERROR,
                 null,
-                Translator.toLocale(MessageConstants.UNAUTHORIZED_ERROR)
+                ex.getMessage()
         );
     }
-
-
 }
