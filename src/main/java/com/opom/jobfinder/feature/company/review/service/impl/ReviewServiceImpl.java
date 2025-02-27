@@ -8,6 +8,7 @@ import com.opom.jobfinder.model.repo.review.ReviewRepo;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
+import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;
@@ -30,51 +31,50 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse save(Review review,String companyId) {
+    public Review save(Review review, String companyId) {
         if(companyId == null || companyId.length() != 36) {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Id is not valid!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Company Id is not valid!");
         } else {
             Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
             if (company.isPresent()) {
                 review.setCompany(company.get());
             } else {
-                return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+                throw new BadRequestException("Company Not Found!");
             }
         }
-        return BaseResponse.of(MessageConstants.SUCCESS,reviewRepo.save(review), Translator.toLocale(MessageConstants.SUCCESS));
+        return reviewRepo.save(review);
     }
 
     @Override
-    public BaseResponse update(Review review,String companyId) {
+    public Review update(Review review,String companyId) {
         if(companyId == null || companyId.length() != 36) {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Id is not valid!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Company Id is not valid!");
         } else {
             Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
             Optional<Review> review1 = reviewRepo.findById(review.getId());
             if (company.isPresent() && review1.isPresent()) {
                 review.setCompany(company.get());
             } else {
-                return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+                throw new BadRequestException("Company Not Found!");
             }
         }
-        return BaseResponse.of(MessageConstants.SUCCESS,reviewRepo.save(review), Translator.toLocale(MessageConstants.SUCCESS));
+        return reviewRepo.save(review);
     }
 
     @Override
-    public BaseResponse delete(String reviewId) {
+    public void delete(String reviewId) {
         Optional<Review> review = reviewRepo.findById(UUID.fromString(reviewId));
         if (review.isPresent()) {
             review.get().setStatus(false);
             Review deletedReview = review.get();
             reviewRepo.save(deletedReview);
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Review Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Review Not Found!");
         }
-        return BaseResponse.of(MessageConstants.SUCCESS, "Deleted Review Successfully!", Translator.toLocale(MessageConstants.SUCCESS));
     }
 
     @Override
-    public BaseResponse getByCompany(String companyId) {
+    public List<Review> getByCompany(String companyId) {
         Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
         if (company.isPresent()) {
             List<Review> reviews = reviewRepo.search(cb -> {
@@ -83,14 +83,14 @@ public class ReviewServiceImpl implements ReviewService {
                 query.select(root).where(cb.equal(root.get("company").get("id"), companyId));
                 return query;
             });
-            return BaseResponse.of(MessageConstants.SUCCESS,reviews,Translator.toLocale(MessageConstants.SUCCESS));
+            return reviews;
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Company Not Found!");
         }
     }
 
     @Override
-    public BaseResponse getAvgFromCompany(String companyId) {
+    public Double getAvgFromCompany(String companyId) {
         Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
         if (company.isPresent()) {
             Double averageRating = reviewRepo.search(cb -> {
@@ -102,9 +102,9 @@ public class ReviewServiceImpl implements ReviewService {
 
                 return query;
             }).stream().findFirst().orElse(0.0);
-            return BaseResponse.of(MessageConstants.SUCCESS, averageRating ,Translator.toLocale(MessageConstants.SUCCESS));
+            return averageRating;
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Company Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Company Not Found!");
         }
     }
 }
