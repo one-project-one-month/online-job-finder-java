@@ -27,8 +27,8 @@ public class JobFinderSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/auth/**","docs/**","swagger-ui/**").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/auth/**","docs/**","swagger-ui/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
