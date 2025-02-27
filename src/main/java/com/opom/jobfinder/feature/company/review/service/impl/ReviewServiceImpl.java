@@ -77,12 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> getByCompany(String companyId) {
         Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
         if (company.isPresent()) {
-            List<Review> reviews = reviewRepo.search(cb -> {
-                CriteriaQuery<Review> query = cb.createQuery(Review.class);
-                Root<Review> root = query.from(Review.class);
-                query.select(root).where(cb.equal(root.get("company").get("id"), companyId));
-                return query;
-            });
+            List<Review> reviews = reviewRepo.findByCompanyId(UUID.fromString(companyId));
             return reviews;
         } else {
             throw new BadRequestException("Company Not Found!");
@@ -98,7 +93,7 @@ public class ReviewServiceImpl implements ReviewService {
                 Root<Review> root = query.from(Review.class);
 
                 query.select(cb.avg(root.get("rating")))
-                        .where(cb.equal(root.get("company").get("id"), companyId));
+                        .where(cb.equal(root.get("company").get("id"), UUID.fromString(companyId)));
 
                 return query;
             }).stream().findFirst().orElse(0.0);
