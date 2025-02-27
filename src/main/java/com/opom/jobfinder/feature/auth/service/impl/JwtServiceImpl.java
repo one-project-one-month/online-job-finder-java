@@ -4,6 +4,8 @@ import com.opom.jobfinder.config.TokenType;
 import com.opom.jobfinder.feature.auth.service.JwtService;
 import com.opom.jobfinder.model.entity.account.Account;
 import com.opom.jobfinder.model.repo.account.AccountRepo;
+import com.opom.jobfinder.utility.Translator;
+import com.opom.jobfinder.utility.exception.BadRequestException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,10 +13,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Key;
 import java.util.Collections;
@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import static com.opom.jobfinder.utility.MessageConstants.USER_DOES_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +57,7 @@ public class JwtServiceImpl implements JwtService {
             UserDetails userDetails,
             long jwtExpiration
     ) {
-        Account account = accountRepo.findByEmail(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found!"));
+        Account account = accountRepo.findByEmail(userDetails.getUsername()).orElseThrow(() -> new BadRequestException(Translator.toLocale(USER_DOES_NOT_EXIST, userDetails.getUsername())));
         extraClaims.put("role", Collections.singletonList(account.getRole().getName()));
         return Jwts
                 .builder()
