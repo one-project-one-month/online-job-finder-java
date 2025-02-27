@@ -59,6 +59,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
         Optional<Location> originLocation = locationRepo.findById(id);
         if(originLocation.isPresent()) {
             locationDetails.setId(id);
+            locationDetails.setCreatedAt(originLocation.get().getCreatedAt());
             return locationRepo.save(locationDetails);
         } else {
             throw new BadRequestException("Location not found!");
