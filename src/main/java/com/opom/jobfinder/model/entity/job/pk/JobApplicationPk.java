@@ -22,8 +22,8 @@ public class JobApplicationPk {
 		return "%s-%s".formatted(jobId, applicantId);
 	}
 	
-	public static JobApplicationPk parse(String id) {
-		var array = id.split("-");
-		return new JobApplicationPk(UUID.fromString(array[0]), UUID.fromString(array[1]));
-	}
+//	public static JobApplicationPk parse(String id) {
+//		var array = id.split("-");
+//		return new JobApplicationPk(UUID.fromString(array[0]), UUID.fromString(array[1]));
+//	}
 }
