@@ -54,7 +54,6 @@ public class Account extends AbstractEntity implements UserDetails {
     @OneToMany(mappedBy = "account")
     private List<SocialMedia> socialMedias;
 
-
     @Override
     public String getUsername() {
         return email;
