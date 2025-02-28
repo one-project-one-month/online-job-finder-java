@@ -1,3 +1,4 @@
+
 package com.opom.jobfinder.utility.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
