@@ -1,7 +1,7 @@
 package com.opom.jobfinder.model.repo.info;
 
 import com.opom.jobfinder.model.entity.info.JobCategory;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.opom.jobfinder.model.repo.BaseRepository;
 
-public interface CategoryRepo extends JpaRepository<JobCategory,Integer> {
+public interface CategoryRepo extends BaseRepository<JobCategory,Integer> {
 }
