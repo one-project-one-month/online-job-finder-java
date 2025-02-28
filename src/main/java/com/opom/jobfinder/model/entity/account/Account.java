@@ -45,16 +45,15 @@ public class Account extends AbstractEntity implements UserDetails {
     private String password;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "role_id")
     private Role role;
 
     private boolean completed;
 
-    @Column(nullable = true)
     private String profilePhoto;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private List<SocialMedia> socialMedias;
+
 
     @Override
     public String getUsername() {
@@ -62,12 +61,8 @@ public class Account extends AbstractEntity implements UserDetails {
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-<<<<<<< Updated upstream
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-=======
-        return List.of(new SimpleGrantedAuthority(role.getName()));
->>>>>>> Stashed changes
     }
 
-
+   
 }
