@@ -27,5 +27,4 @@ public class ApplicantSkill extends AbstractEntity {
     @JoinColumn(name = "applicant_id", insertable = false, updatable = false)
     private Applicant applicant;
 
-
 }
