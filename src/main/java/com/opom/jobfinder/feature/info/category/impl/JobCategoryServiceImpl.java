@@ -1,6 +1,9 @@
 package com.opom.jobfinder.feature.info.category.impl;
 
-import com.opom.jobfinder.feature.info.category.CategoryService;
+import com.opom.jobfinder.feature.info.category.JobCategoryService;
+import com.opom.jobfinder.feature.info.category.dto.CreateJobJobCategoryDTO;
+import com.opom.jobfinder.feature.info.category.dto.UpdateJobCategoryDTO;
+import com.opom.jobfinder.feature.info.category.mapper.JobCategoryMapper;
 import com.opom.jobfinder.model.entity.info.JobCategory;
 import com.opom.jobfinder.model.repo.info.CategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class JobCategoryServiceImpl implements JobCategoryService {
 
     @Autowired
     private CategoryRepo jobCategoryRepo;
 
+    @Autowired
+    private JobCategoryMapper jobCategoryMapper;
+
     @Override
     @Transactional
-    public JobCategory createCategory(JobCategory jobCategory) {
+    public JobCategory createCategory(CreateJobJobCategoryDTO createJobCategoryDTO) {
+        JobCategory jobCategory = jobCategoryMapper.toEntity(createJobCategoryDTO);
         jobCategoryRepo.save(jobCategory);
         return jobCategory;
     }
@@ -30,18 +37,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategory(JobCategory jobCategory) {
-        jobCategoryRepo.delete(jobCategory);
+    public void deleteCategory(int id) {
+        jobCategoryRepo.deleteById(id);
     }
 
     @Override
     @Transactional
-    public JobCategory updateCategory(int id,JobCategory jobCategory) {
+    public JobCategory updateCategory(int id, UpdateJobCategoryDTO updateCategoryDTO) {
         JobCategory jobCategory1 = jobCategoryRepo.findById(id).orElseThrow(()->new RuntimeException("Job Category with this id not found!"));
-        jobCategory1.setName(jobCategory.getName());
-        jobCategory1.setVersion(jobCategory.getVersion());
-        jobCategory1.setDescription(jobCategory.getDescription());
-        jobCategory1.setUpdatedAt(jobCategory.getUpdatedAt());
+        jobCategory1.setName(updateCategoryDTO.getName());
+        jobCategory1.setDescription(updateCategoryDTO.getDescription());
         return jobCategory1;
     }
 }
