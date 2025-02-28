@@ -1,9 +1,6 @@
 package com.opom.jobfinder.model.entity.account;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
+import com.opom.jobfinder.model.entity.AbstractEntity;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -47,17 +44,16 @@ public class Account extends AbstractEntity implements UserDetails {
     @Column(nullable = true)
     private String profilePhoto;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account")
     private List<SocialMedia> socialMedias;
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.getName()));
     }
 
-   
+    @Override
+    public String getUsername() {
+        return email;
+    }
 }
