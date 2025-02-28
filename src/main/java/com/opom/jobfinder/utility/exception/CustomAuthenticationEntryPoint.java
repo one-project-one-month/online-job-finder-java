@@ -1,6 +1,7 @@
 package com.opom.jobfinder.utility.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;

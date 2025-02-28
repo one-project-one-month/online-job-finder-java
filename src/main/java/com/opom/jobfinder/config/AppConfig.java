@@ -1,6 +1,8 @@
 package com.opom.jobfinder.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.opom.jobfinder.model.repo.account.AccountRepo;
 import com.opom.jobfinder.utility.Translator;
 import com.opom.jobfinder.utility.exception.UnexpectedException;
@@ -36,7 +38,7 @@ public class AppConfig {
     public ObjectMapper objectMapper (){
         return new ObjectMapper();
     }
-    
+
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> accountRepo.findByEmail(email)
