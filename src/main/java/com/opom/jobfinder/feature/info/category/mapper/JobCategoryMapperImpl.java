@@ -3,7 +3,9 @@ package com.opom.jobfinder.feature.info.category.mapper;
 import com.opom.jobfinder.feature.info.category.dto.JobJobCategoryDTO;
 import com.opom.jobfinder.feature.info.category.dto.CreateJobJobCategoryDTO;
 import com.opom.jobfinder.model.entity.info.JobCategory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JobCategoryMapperImpl implements JobCategoryMapper {
     @Override
     public JobCategory toEntity(CreateJobJobCategoryDTO createJobCategoryDTO) {
