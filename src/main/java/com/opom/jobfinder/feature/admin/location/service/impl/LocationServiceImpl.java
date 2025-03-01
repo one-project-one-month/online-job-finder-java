@@ -1,5 +1,9 @@
 package com.opom.jobfinder.feature.admin.location.service.impl;
 
+import com.opom.jobfinder.feature.admin.location.dtos.GetCompanyByLocationDTO;
+import com.opom.jobfinder.feature.admin.location.dtos.GetJobByLocationDTO;
+import com.opom.jobfinder.feature.admin.location.dtos.LocationDTO;
+import com.opom.jobfinder.feature.admin.location.mapper.LocationManager;
 import com.opom.jobfinder.feature.admin.location.service.LocationService;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
@@ -11,70 +15,65 @@ import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.BaseService;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
+import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
+@Slf4j
 public class LocationServiceImpl extends BaseService implements LocationService {
 
     // CONSTANT VALUES
     private final LocationRepo locationRepo;
     private final CompanyRepo companyRepo;
     private final JobRepo jobRepo;
+    private final LocationManager locationManager;
 
-    // CONSTRUCTOR
-    public LocationServiceImpl(LocationRepo locationRepo, CompanyRepo companyRepo, JobRepo jobRepo) {
-        this.locationRepo = locationRepo;
-        this.companyRepo = companyRepo;
-        this.jobRepo = jobRepo;
+    @Override
+    public Location save(Location location) {
+
+        locationRepo.findByName(location.getName())
+                        .ifPresent(existingLocation -> {
+                            throw new BadRequestException("Location already exist!");
+                        });
+
+        return locationRepo.save(location);
     }
 
     @Override
-    public BaseResponse save(Location location) {
-        try {
-            List<Location> locations = locationRepo.search(cb -> {
-                CriteriaQuery<Location> query = cb.createQuery(Location.class);
-                Root<Location> root = query.from(Location.class);
-                query.select(root).where(cb.equal(root.get("location").get("name"), location.getName()));
-                return query;
-            });
-            if(!locations.isEmpty()) {
-                return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Already Exist!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
-            }
-            return successResponse(locationRepo.save(location));
-        } catch (Exception e) {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Save Location Failed"+e,Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
-        }
+    public List<Location> getAll() {
+        return locationRepo.findAll();
     }
 
     @Override
-    public BaseResponse getAll() {
-        return successResponse(locationRepo.findAll());
-    }
-
-    @Override
-    public BaseResponse update(Location locationDetails) {
-        Optional<Location> originLocation = locationRepo.findById(locationDetails.getId());
+    public Location update(Location locationDetails,int id) {
+        Optional<Location> originLocation = locationRepo.findById(id);
         if(originLocation.isPresent()) {
-            return successResponse(locationRepo.save(locationDetails));
+            locationDetails.setId(id);
+            locationDetails.setCreatedAt(originLocation.get().getCreatedAt());
+            return locationRepo.save(locationDetails);
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Location not found!");
         }
     }
 
     @Override
-    public BaseResponse delete(String id) {
+    public void delete(String id) {
         Optional<Location> originLocation = locationRepo.findById(Integer.valueOf(id));
         if(originLocation.isPresent()) {
             originLocation.get().setStatus(false);
             locationRepo.save(originLocation.get());
-            return successResponse("Delete Location Successfully!");
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR, "Location Not Found!",Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Location delete failed!");
         }
     }
 
@@ -84,7 +83,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
 //    }
 
     @Override
-    public BaseResponse getJobsByLocation(String locationId) {
+    public List<GetJobByLocationDTO> getJobsByLocation(String locationId) {
         Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
         if(location.isPresent()) {
             List<Job> jobs = jobRepo.search(cb -> {
@@ -93,14 +92,19 @@ public class LocationServiceImpl extends BaseService implements LocationService 
                 query.select(root).where(cb.equal(root.get("location").get("id"), locationId));
                 return query;
             });
-            return successResponse(jobs);
+            List<GetJobByLocationDTO> jobByLocationDTOS = new ArrayList<>();
+            for (Job job : jobs) {
+                jobByLocationDTOS.add(locationManager.toGetJobByLocationDTO(job));
+            }
+
+            return jobByLocationDTOS;
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Location not found!");
         }
     }
 
     @Override
-    public BaseResponse getCompaniesByLocation(String locationId) {
+    public List<GetCompanyByLocationDTO> getCompaniesByLocation(String locationId) {
         Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
         if(location.isPresent()) {
             List<Company> companies = companyRepo.search(cb -> {
@@ -109,9 +113,33 @@ public class LocationServiceImpl extends BaseService implements LocationService 
                 query.select(root).where(cb.equal(root.get("location").get("id"), Integer.parseInt(locationId)));
                 return query;
             });
-            return successResponse(companies);
+            List<GetCompanyByLocationDTO> companyByLocationDTOS = new ArrayList<>();
+            for (Company company : companies) {
+                companyByLocationDTOS.add(locationManager.toGetCompanyByLocation(company));
+            }
+
+            return companyByLocationDTOS;
         } else {
-            return BaseResponse.of(MessageConstants.BAD_REQUEST_ERROR,"Location Not Found!", Translator.toLocale(MessageConstants.BAD_REQUEST_ERROR));
+            throw new BadRequestException("Location not found!");
         }
+    }
+
+    @Override
+    public Location getLocationById(int id) {
+        Optional<Location> optionalLocation = locationRepo.findById(id);
+        if(optionalLocation.isPresent()) {
+            return optionalLocation.get();
+        }else {
+            throw new BadRequestException("Location not found!");
+        }
+    }
+
+    public Location mapLocationDTOToEntity(LocationDTO locationDTO) {
+        Location location = new Location();
+
+        location.setName(locationDTO.name());
+        location.setDescription(locationDTO.description());
+        location.setStatus(true);
+        return location;
     }
 }
