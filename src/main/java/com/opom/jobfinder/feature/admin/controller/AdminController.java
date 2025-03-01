@@ -1,12 +1,5 @@
 package com.opom.jobfinder.feature.admin.controller;
 
-import com.opom.jobfinder.feature.admin.service.LocationService;
-import com.opom.jobfinder.model.entity.info.Location;
-import com.opom.jobfinder.utility.BaseResponse;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.opom.jobfinder.dto.info.SkillDto;
 import com.opom.jobfinder.feature.admin.service.AdminService;
 import jakarta.validation.Valid;
