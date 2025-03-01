@@ -19,7 +19,7 @@ public class Role extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String name;
 
     public Role(String name) {
