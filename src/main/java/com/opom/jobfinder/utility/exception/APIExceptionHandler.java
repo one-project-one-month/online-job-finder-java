@@ -75,14 +75,14 @@ public class APIExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public BaseResponse handleUnauthorizedException(Exception ex) {
+    public BaseResponse handleUnauthorizedException(UnauthorizedException ex) {
         log.error("Error ", ex);
         return BaseResponse.of(MessageConstants.UNAUTHORIZED_ERROR, null, ex.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public BaseResponse handleAccessDeniedException(Exception ex) {
+    public BaseResponse handleAccessDeniedException(AccessDeniedException ex) {
         log.error("Error ", ex);
         return BaseResponse.of(MessageConstants.ACCESS_DENIED_ERROR, null, ex.getMessage());
     }
@@ -97,9 +97,7 @@ public class APIExceptionHandler {
         return BaseResponse.of(
                 MessageConstants.UNAUTHORIZED_ERROR,
                 null,
-                Translator.toLocale(MessageConstants.UNAUTHORIZED_ERROR)
+                ex.getMessage()
         );
     }
-
-
 }
