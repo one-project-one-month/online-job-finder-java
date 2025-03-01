@@ -39,6 +39,7 @@ public class Account extends AbstractEntity implements UserDetails {
     private String password;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id")
     private Role role;
 
     private boolean completed;
