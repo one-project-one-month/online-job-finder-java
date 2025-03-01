@@ -5,7 +5,6 @@ import com.opom.jobfinder.feature.admin.info.skill.mapper.SkillMapper;
 import com.opom.jobfinder.feature.admin.info.skill.service.SkillService;
 import com.opom.jobfinder.model.entity.info.Skill;
 import com.opom.jobfinder.model.repo.info.SkillRepo;
-import com.opom.jobfinder.utility.BaseService;
 import com.opom.jobfinder.utility.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SkillServiceImpl extends BaseService implements SkillService {
+public class SkillServiceImpl implements SkillService {
 
     private final SkillRepo skillRepo;
     private final SkillMapper skillMapper;

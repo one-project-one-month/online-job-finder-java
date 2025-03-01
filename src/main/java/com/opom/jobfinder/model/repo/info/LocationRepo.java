@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface LocationRepo extends BaseRepository<Location, Integer> {
     Optional<Location> findOneById(int id);
+    Optional<Location> findByName(String name);
 }

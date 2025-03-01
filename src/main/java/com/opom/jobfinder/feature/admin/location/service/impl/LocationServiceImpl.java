@@ -9,12 +9,8 @@ import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.model.entity.job.Job;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
+import com.opom.jobfinder.model.repo.info.LocationRepo;
 import com.opom.jobfinder.model.repo.job.JobRepo;
-import com.opom.jobfinder.model.repo.location.LocationRepo;
-import com.opom.jobfinder.utility.BaseResponse;
-import com.opom.jobfinder.utility.BaseService;
-import com.opom.jobfinder.utility.MessageConstants;
-import com.opom.jobfinder.utility.Translator;
 import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -23,14 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 @Slf4j
-public class LocationServiceImpl extends BaseService implements LocationService {
+public class LocationServiceImpl implements LocationService {
 
     // CONSTANT VALUES
     private final LocationRepo locationRepo;
