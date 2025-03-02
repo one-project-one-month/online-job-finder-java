@@ -1,34 +1,33 @@
 package com.opom.jobfinder.feature.company.review.service.impl;
 
+import com.opom.jobfinder.feature.company.review.dtos.ReviewByCompanyDTO;
+import com.opom.jobfinder.feature.company.review.mapper.ReviewManager;
 import com.opom.jobfinder.feature.company.review.service.ReviewService;
+import com.opom.jobfinder.model.entity.applicant.Applicant;
 import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
 import com.opom.jobfinder.model.repo.review.ReviewRepo;
-import com.opom.jobfinder.utility.BaseResponse;
-import com.opom.jobfinder.utility.MessageConstants;
-import com.opom.jobfinder.utility.Translator;
 import com.opom.jobfinder.utility.exception.BadRequestException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
     // CONSTANT VALUES
     private final ReviewRepo reviewRepo;
     private final CompanyRepo companyRepo;
+    private final ReviewManager reviewManager;
 
-    // CONSTRUCTOR
-    public ReviewServiceImpl(ReviewRepo reviewRepo, CompanyRepo companyRepo) {
-        this.reviewRepo = reviewRepo;
-        this.companyRepo = companyRepo;
-    }
 
     @Override
     public Review save(Review review, String companyId) {
@@ -74,11 +73,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getByCompany(String companyId) {
+    public List<ReviewByCompanyDTO> getByCompany(String companyId) {
         Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
         if (company.isPresent()) {
             List<Review> reviews = reviewRepo.findByCompanyId(UUID.fromString(companyId));
-            return reviews;
+            List<ReviewByCompanyDTO> reviewByCompanyDTOS = new ArrayList<>();
+            for (Review review : reviews) {
+                reviewByCompanyDTOS.add(reviewManager.toReviewByCompanyDTO(review));
+            }
+            return reviewByCompanyDTOS;
         } else {
             throw new BadRequestException("Company Not Found!");
         }
