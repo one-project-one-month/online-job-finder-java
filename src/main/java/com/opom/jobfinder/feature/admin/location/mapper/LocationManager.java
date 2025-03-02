@@ -55,8 +55,8 @@ public class LocationManager {
                     job.getDescription(),
                     job.getPost(),
                     job.getAddress(),
-                    job.getType(), // Assuming Type is an enum or a specific type, adjust accordingly
-                    job.getStatus().name()
+                    job.getType(),
+                    job.getJobStatus().name()
             );
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
