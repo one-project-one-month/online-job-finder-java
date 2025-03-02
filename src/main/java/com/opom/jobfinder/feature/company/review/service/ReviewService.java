@@ -1,9 +1,8 @@
 package com.opom.jobfinder.feature.company.review.service;
 
 
-import com.opom.jobfinder.model.entity.company.Company;
+import com.opom.jobfinder.feature.company.review.dtos.ReviewByCompanyDTO;
 import com.opom.jobfinder.model.entity.company.Review;
-import com.opom.jobfinder.utility.BaseResponse;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public interface ReviewService {
     void delete(String reviewId);
 
     // GET REVIEWS BY COMPANY
-    List<Review> getByCompany(String companyId);
+    List<ReviewByCompanyDTO> getByCompany(String companyId);
 
     // GET AVERAGE REVIEW FROM COMPANY
     Double getAvgFromCompany(String companyId);

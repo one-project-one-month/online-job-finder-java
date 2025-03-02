@@ -1,5 +1,6 @@
 package com.opom.jobfinder.feature.company.review.controller;
 
+import com.opom.jobfinder.feature.company.review.dtos.ReviewByCompanyDTO;
 import com.opom.jobfinder.feature.company.review.dtos.ReviewDTO;
 import com.opom.jobfinder.feature.company.review.mapper.ReviewManager;
 import com.opom.jobfinder.feature.company.review.service.ReviewService;
@@ -32,7 +33,7 @@ public class ReviewController {
 
     @GetMapping("/{id}/reviews")
     public ResponseEntity<BaseResponse> getReviewsByCompany(@PathVariable String id) {
-        List<Review> response = reviewService.getByCompany(id);
+        List<ReviewByCompanyDTO> response = reviewService.getByCompany(id);
         return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, response, Translator.toLocale(MessageConstants.SUCCESS)));
     }
 
