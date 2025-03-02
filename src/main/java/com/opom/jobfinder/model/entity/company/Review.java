@@ -2,6 +2,8 @@ package com.opom.jobfinder.model.entity.company;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opom.jobfinder.model.entity.AbstractEntity;
 import com.opom.jobfinder.model.entity.applicant.Applicant;
 
@@ -31,10 +33,12 @@ public class Review extends AbstractEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "company_id")
+    @JsonIgnore
     private Company company;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "applicant_id")
+    @JsonIgnore
     private Applicant applicant;
 
 }
