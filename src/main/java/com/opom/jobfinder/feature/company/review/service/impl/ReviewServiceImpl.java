@@ -1,5 +1,7 @@
 package com.opom.jobfinder.feature.company.review.service.impl;
 
+import com.opom.jobfinder.feature.applicant.service.ApplicantService;
+import com.opom.jobfinder.feature.auth.service.AuthService;
 import com.opom.jobfinder.feature.company.review.dtos.ReviewByCompanyDTO;
 import com.opom.jobfinder.feature.company.review.mapper.ReviewManager;
 import com.opom.jobfinder.feature.company.review.service.ReviewService;
@@ -9,6 +11,8 @@ import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
 import com.opom.jobfinder.model.repo.review.ReviewRepo;
 import com.opom.jobfinder.utility.exception.BadRequestException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
@@ -27,7 +31,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepo reviewRepo;
     private final CompanyRepo companyRepo;
     private final ReviewManager reviewManager;
-
+    private final AuthService authService;
+    private final ApplicantService applicantService;
 
     @Override
     public Review save(Review review, String companyId) {
@@ -36,6 +41,8 @@ public class ReviewServiceImpl implements ReviewService {
         } else {
             Optional<Company> company = companyRepo.findById(UUID.fromString(companyId));
             if (company.isPresent()) {
+                Applicant applicant = applicantService.findById(authService.getLoginUserId());
+                review.setApplicant(applicant);
                 review.setCompany(company.get());
             } else {
                 throw new BadRequestException("Company Not Found!");

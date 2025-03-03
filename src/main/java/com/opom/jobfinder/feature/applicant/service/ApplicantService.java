@@ -1,5 +1,9 @@
 package com.opom.jobfinder.feature.applicant.service;
 
-public interface ApplicantService {
+import com.opom.jobfinder.model.entity.applicant.Applicant;
 
+import java.util.UUID;
+
+public interface ApplicantService {
+    Applicant findById(UUID id);
 }
