@@ -4,8 +4,10 @@ import com.opom.jobfinder.model.entity.job.Job;
 import com.opom.jobfinder.model.repo.BaseRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface JobRepo extends BaseRepository<Job, UUID> {
+    List<Job> findByCompanyId(UUID id);
 }

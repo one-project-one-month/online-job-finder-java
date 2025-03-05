@@ -1,0 +1,47 @@
+package com.opom.jobfinder.feature.company.output;
+
+import com.opom.jobfinder.feature.company.profile.output.LocationDto;
+import com.opom.jobfinder.feature.company.profile.output.SocialMediaDto;
+import com.opom.jobfinder.model.entity.company.Company;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CompanyDetail {
+    private UUID id;
+    private String name;
+    private String email;
+    private String profilePhoto;
+    private String role;
+    private String phone;
+    private String website;
+    private String address;
+    private String description;
+    private LocationDto location;
+    private List<SocialMediaDto> socialMedias;
+
+    public static CompanyDetail from(Company company) {
+        return CompanyDetail.builder()
+                .id(company.getId())
+                .name(company.getAccount().getName())
+                .email(company.getAccount().getEmail())
+                .profilePhoto(company.getAccount().getProfilePhoto())
+                .role(company.getAccount().getRole().getName())
+                .phone(company.getPhone())
+                .website(company.getWebsite())
+                .address(company.getAddress())
+                .description(company.getDescription())
+                .location(LocationDto.from(company.getLocation()))
+                .socialMedias(company.getAccount().getSocialMedias().stream().map(SocialMediaDto::from).toList())
+                .build();
+    }
+
+}
