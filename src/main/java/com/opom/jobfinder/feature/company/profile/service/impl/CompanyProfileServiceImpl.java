@@ -1,5 +1,6 @@
 package com.opom.jobfinder.feature.company.profile.service.impl;
 
+import com.opom.jobfinder.feature.auth.service.AuthService;
 import com.opom.jobfinder.feature.company.profile.input.CompanyProfileForm;
 import com.opom.jobfinder.feature.company.profile.output.CompanyProfile;
 import com.opom.jobfinder.feature.company.profile.service.CompanyProfileService;
@@ -20,6 +21,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     private final CompanyRepo companyRepo;
     private final LocationRepo locationRepo;
+    private final AuthService authService;
 
     @Override
     public CompanyProfile findCompanyProfileByEmail(String email) {
@@ -31,7 +33,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     @Override
     public CompanyProfile updateProfile(CompanyProfileForm form) {
         // need to use login username for the email argument. waiting for security config
-        var company = companyRepo.findOneByEmail(null).orElseThrow(() -> new IllegalArgumentException("Invalid email"));
+        var company = companyRepo.findById(authService.getLoginUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid email"));
         update(company, form);
         checkProfileCompletion(company);
 //        nextVersion(company);
