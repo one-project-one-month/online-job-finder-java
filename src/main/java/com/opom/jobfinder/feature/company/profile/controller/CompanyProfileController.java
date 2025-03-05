@@ -21,19 +21,19 @@ public class CompanyProfileController {
     @GetMapping("{id}")
     ResponseEntity<BaseResponse> profile(@PathVariable("id") UUID id) {
         var data = companyProfileService.findCompanyProfileById(id);
-        return ResponseEntity.ok(BaseResponse.of(null, data, "Company profile"));
+        return ResponseEntity.ok(BaseResponse.success(data));
     }
 
     @GetMapping("me")
     ResponseEntity<BaseResponse> profile() {
         var data = companyProfileService.findCompanyProfileById(authService.getLoginUserId());
-        return ResponseEntity.ok(BaseResponse.of(null, data, "Company profile"));
+        return ResponseEntity.ok(BaseResponse.success(data));
     }
 
     @PutMapping("me")
     ResponseEntity<BaseResponse> update(@RequestBody CompanyProfileForm form) {
         var data = companyProfileService.updateProfile(form);
-        return ResponseEntity.ok(BaseResponse.of(null, data, "Updated company profile"));
+        return ResponseEntity.ok(BaseResponse.success(data));
     }
 
 }
