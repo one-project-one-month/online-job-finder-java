@@ -6,7 +6,6 @@ import com.opom.jobfinder.model.entity.info.Location;
 import com.opom.jobfinder.model.entity.job.Job;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
 import com.opom.jobfinder.model.repo.job.JobRepo;
-import com.opom.jobfinder.model.repo.location.LocationRepo;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.Translator;
 import org.instancio.Instancio;
