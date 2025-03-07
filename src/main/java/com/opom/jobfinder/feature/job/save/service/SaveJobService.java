@@ -16,51 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-@AllArgsConstructor
-public class SaveJobService {
+public interface SaveJobService {
+    SavedJob save(UUID jobId);
+    List<SavedJob> getSaveJobsByApplicant();
+    List<SavedJob> un_save(UUID jobId);
 
-    private final SaveJobRepo saveJobRepo;
-    private final JobRepo jobRepo;
-    private final AuthService authService;
-    private final ApplicantRepo applicantRepo;
-
-    public SavedJob save(UUID jobId) {
-        Optional<Job> job = jobRepo.findById(jobId);
-        if(job.isPresent()) {
-            UUID applicantID = authService.getLoginUserId();
-            Optional<Applicant> applicant = applicantRepo.findById(applicantID);
-            SavedJobPk savedJobPk = new SavedJobPk(applicant.get().getId(), job.get().getId());
-            SavedJob savedJob = new SavedJob();
-
-            savedJob.setId(savedJobPk);
-            return saveJobRepo.save(savedJob);
-        }else {
-            throw new BadRequestException("Job Not Found!");
-        }
-    }
-
-    public List<SavedJob> getSaveJobsByApplicant() {
-        UUID applicantId = authService.getLoginUserId();
-        Optional<Applicant> applicant = applicantRepo.findById(applicantId);
-        if(applicant.isPresent()) {
-            return saveJobRepo.findByApplicantOrderByCreatedAtDesc(applicant.get());
-        }else {
-            throw new BadRequestException("Applicant Not Found!");
-        }
-    }
-
-    public List<SavedJob> un_save(UUID jobId) {
-        Optional<Job> job = jobRepo.findById(jobId);
-        if(job.isPresent()) {
-            UUID applicantID = authService.getLoginUserId();
-            Optional<Applicant> applicant = applicantRepo.findById(applicantID);
-            SavedJobPk savedJobPk = new SavedJobPk(applicant.get().getId(), job.get().getId());
-
-            saveJobRepo.deleteById(savedJobPk);
-            return saveJobRepo.findByApplicantOrderByCreatedAtDesc(applicant.get());
-        }else {
-            throw new BadRequestException("Job Not Found!");
-        }
-    }
 }
