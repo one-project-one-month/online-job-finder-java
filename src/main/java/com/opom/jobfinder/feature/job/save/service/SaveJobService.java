@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SaveJobService {
-    SavedJob save(UUID jobId);
+    String save(UUID jobId);
     List<SavedJob> getSaveJobsByApplicant();
     List<SavedJob> un_save(UUID jobId);
 

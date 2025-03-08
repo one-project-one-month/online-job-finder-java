@@ -27,7 +27,7 @@ public class SaveJobServiceImpl implements SaveJobService {
     private final ApplicantRepo applicantRepo;
 
     @Override
-    public SavedJob save(UUID jobId) {
+    public String save(UUID jobId) {
         SavedJobPk savedJobPk = getSavedJobPk(jobId);
         if(savedJobPk != null) {
             Optional<SavedJob> savedJob = saveJobRepo.findById(savedJobPk);
@@ -36,7 +36,8 @@ public class SaveJobServiceImpl implements SaveJobService {
             }else {
                 SavedJob savedJob1 = new SavedJob();
                 savedJob1.setId(savedJobPk);
-                return saveJobRepo.save(savedJob1);
+                saveJobRepo.save(savedJob1);
+                return "Save Job Successfully!";
             }
         }else {
             throw new BadRequestException("Job or Applicant Not Found!");
@@ -61,12 +62,13 @@ public class SaveJobServiceImpl implements SaveJobService {
             Optional<SavedJob> savedJob = saveJobRepo.findById(savedJobPk);
             if(savedJob.isPresent()) {
                 saveJobRepo.deleteById(savedJobPk);
-                return saveJobRepo.findByApplicantOrderByCreatedAtDesc(applicant.get());
+                Optional<Applicant> applicant = applicantRepo.findById(savedJobPk.getApplicantId());
+                return saveJobRepo.findByApplicantOrderByCreatedAtDesc(applicant.orElseThrow());
             }else {
                 throw new IllegalArgumentException("Job Already Saved");
             }
         }else {
-            throw new BadRequestException("Job Not Found!");
+            throw new BadRequestException("Job or Applicant Not Found!");
         }
     }
 
