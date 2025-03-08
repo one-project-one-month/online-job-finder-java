@@ -1,7 +1,7 @@
 package com.opom.jobfinder.feature.job.service.JunitTest;
 
-import com.opom.jobfinder.feature.job.save.service.SaveJobService;
 import com.opom.jobfinder.feature.auth.service.AuthService;
+import com.opom.jobfinder.feature.job.save.service.impl.SaveJobServiceImpl;
 import com.opom.jobfinder.model.entity.applicant.Applicant;
 import com.opom.jobfinder.model.entity.applicant.SavedJob;
 import com.opom.jobfinder.model.repo.applicant.ApplicantRepo;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 public class SaveJobServiceTest {
 
     @InjectMocks
-    private SaveJobService saveJobService;
+    private SaveJobServiceImpl saveJobServiceImpl;
 
     @Mock
     private JobRepo jobRepo;
@@ -50,10 +50,8 @@ public class SaveJobServiceTest {
         when(authService.getLoginUserId()).thenReturn(savedJobMockData.getApplicant().getId());
         when(applicantRepo.findById(any())).thenReturn(Optional.ofNullable(savedJobMockData.getApplicant()));
 
-        SavedJob savedJob = saveJobService.save(UUID.randomUUID());
-        Assertions.assertEquals(savedJob.getApplicant(), savedJobMockData.getApplicant());
-        Assertions.assertEquals(savedJob.getJob(), savedJobMockData.getJob());
-        Assertions.assertEquals(savedJob.getId(),savedJobMockData.getId());
+        String response = saveJobServiceImpl.save(UUID.randomUUID());
+        assertThat("Saved Job Successfully!", is(response));
     }
 
     @Test
@@ -65,7 +63,7 @@ public class SaveJobServiceTest {
         when(applicantRepo.findById(any())).thenReturn(Optional.ofNullable(savedJobMockData.getApplicant()));
 
         try{
-            saveJobService.save(UUID.randomUUID());
+            saveJobServiceImpl.save(UUID.randomUUID());
         } catch (BadRequestException e) {
             Assertions.assertEquals(e.getClass(), BadRequestException.class);
             assertThat("Applicant Not Found!" ,is(e.getMessage()));
@@ -79,7 +77,7 @@ public class SaveJobServiceTest {
         when(applicantRepo.findById(any())).thenReturn(Optional.of(savedJobs.getFirst().getApplicant()));
         when(saveJobRepo.findByApplicantOrderByCreatedAtDesc(any())).thenReturn(savedJobs);
 
-        List<SavedJob> savedJobsByApplicant = saveJobService.getSaveJobsByApplicant();
+        List<SavedJob> savedJobsByApplicant = saveJobServiceImpl.getSaveJobsByApplicant();
         Assertions.assertEquals(savedJobs.getFirst().getApplicant(), savedJobsByApplicant.getFirst().getApplicant());
         Assertions.assertEquals(savedJobs.getClass(), ArrayList.class);
     }
@@ -104,11 +102,12 @@ public class SaveJobServiceTest {
         when(applicantRepo.findById(any())).thenReturn(Optional.of(savedJobsMockData.getFirst().getApplicant()));
         when(authService.getLoginUserId()).thenReturn(savedJobsMockData.getFirst().getApplicant().getId());
         when(saveJobRepo.findByApplicantOrderByCreatedAtDesc(any())).thenReturn(savedJobsMockData);
+        when(saveJobRepo.findById(any())).thenReturn(Optional.of(savedJobMockData));
 
-        List<SavedJob> savedJobsOfResult = saveJobService.un_save(UUID.randomUUID());
+        List<SavedJob> savedJobsOfResult = saveJobServiceImpl.un_save(UUID.randomUUID());
         Assertions.assertEquals(ArrayList.class, savedJobsOfResult.getClass());
         Assertions.assertEquals(savedJobsMockData.getFirst().getApplicant(), savedJobsOfResult.getFirst().getApplicant());
-        verify(applicantRepo, times(1)).findById(any());
+        verify(applicantRepo, times(2)).findById(any());
         verify(saveJobRepo, times(1)).findByApplicantOrderByCreatedAtDesc(any());
         verify(saveJobRepo, times(1)).deleteById(any());
     }

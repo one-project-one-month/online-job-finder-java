@@ -37,7 +37,7 @@ public class SaveJobServiceImpl implements SaveJobService {
                 SavedJob savedJob1 = new SavedJob();
                 savedJob1.setId(savedJobPk);
                 saveJobRepo.save(savedJob1);
-                return "Save Job Successfully!";
+                return "Saved Job Successfully!";
             }
         }else {
             throw new BadRequestException("Job or Applicant Not Found!");
