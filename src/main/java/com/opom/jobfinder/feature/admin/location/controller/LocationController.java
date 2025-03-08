@@ -49,12 +49,14 @@ public class LocationController {
         locationService.delete(id);
         return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, "Delete Location Successfully!", Translator.toLocale(MessageConstants.SUCCESS)));
     }
-
-    @GetMapping("/locations/{id}/jobs")
-    public ResponseEntity<BaseResponse> getJobsByLocations(@PathVariable("id") @NotNull String id) {
-        List<GetJobByLocationDTO> response = locationService.getJobsByLocation(id);
-        return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, response, Translator.toLocale(MessageConstants.SUCCESS)));
-    }
+//
+//    @GetMapping("/locations/{id}/jobs")
+//    public ResponseEntity<BaseResponse> getJobsByLocations(@PathVariable("id") @NotNull String id) {
+//        List<GetJobByLocationDTO> response = locationService.getJobsByLocation(id);
+//        return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, response, Translator.toLocale(MessageConstants.SUCCESS)));
+//    }
+//
+//    @GetMapping("")
 
     @GetMapping("/locations/{id}/companies")
     public ResponseEntity<BaseResponse> getCompaniesByLocations(@PathVariable("id") @NotNull String id) {
