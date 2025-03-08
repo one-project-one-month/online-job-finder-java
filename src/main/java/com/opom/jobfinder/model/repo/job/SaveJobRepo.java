@@ -11,6 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface SaveJobRepo extends JpaRepository<SavedJob, SavedJobPk> {
-    List<SavedJob> findBySavedJobPk(SavedJobPk savedJobPk);
     List<SavedJob> findByApplicantOrderByCreatedAtDesc(Applicant applicant);
 }

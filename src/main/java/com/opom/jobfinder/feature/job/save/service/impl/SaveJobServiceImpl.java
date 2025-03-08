@@ -28,17 +28,18 @@ public class SaveJobServiceImpl implements SaveJobService {
 
     @Override
     public SavedJob save(UUID jobId) {
-        Optional<Job> job = jobRepo.findById(jobId);
-        if(job.isPresent()) {
-            UUID applicantID = authService.getLoginUserId();
-            Optional<Applicant> applicant = applicantRepo.findById(applicantID);
-            SavedJobPk savedJobPk = new SavedJobPk(applicant.get().getId(), job.get().getId());
-            SavedJob savedJob = new SavedJob();
-
-            savedJob.setId(savedJobPk);
-            return saveJobRepo.save(savedJob);
+        SavedJobPk savedJobPk = getSavedJobPk(jobId);
+        if(savedJobPk != null) {
+            Optional<SavedJob> savedJob = saveJobRepo.findById(savedJobPk);
+            if(savedJob.isPresent()) {
+                throw new IllegalArgumentException("Job Already Saved");
+            }else {
+                SavedJob savedJob1 = new SavedJob();
+                savedJob1.setId(savedJobPk);
+                return saveJobRepo.save(savedJob1);
+            }
         }else {
-            throw new BadRequestException("Job Not Found!");
+            throw new BadRequestException("Job or Applicant Not Found!");
         }
     }
 
@@ -55,16 +56,29 @@ public class SaveJobServiceImpl implements SaveJobService {
 
     @Override
     public List<SavedJob> un_save(UUID jobId) {
-        Optional<Job> job = jobRepo.findById(jobId);
-        if(job.isPresent()) {
-            UUID applicantID = authService.getLoginUserId();
-            Optional<Applicant> applicant = applicantRepo.findById(applicantID);
-            SavedJobPk savedJobPk = new SavedJobPk(applicant.get().getId(), job.get().getId());
-
-            saveJobRepo.deleteById(savedJobPk);
-            return saveJobRepo.findByApplicantOrderByCreatedAtDesc(applicant.get());
+        SavedJobPk savedJobPk = getSavedJobPk(jobId);
+        if(savedJobPk != null) {
+            Optional<SavedJob> savedJob = saveJobRepo.findById(savedJobPk);
+            if(savedJob.isPresent()) {
+                saveJobRepo.deleteById(savedJobPk);
+                return saveJobRepo.findByApplicantOrderByCreatedAtDesc(applicant.get());
+            }else {
+                throw new IllegalArgumentException("Job Already Saved");
+            }
         }else {
             throw new BadRequestException("Job Not Found!");
+        }
+    }
+
+    private SavedJobPk getSavedJobPk(UUID jobId) {
+        UUID applicantID = authService.getLoginUserId();
+        Optional<Job> job = jobRepo.findById(jobId);
+        Optional<Applicant> applicant = applicantRepo.findById(applicantID);
+
+        if(job.isPresent() && applicant.isPresent()) {
+            return new SavedJobPk(job.get().getId(),applicant.get().getId());
+        } else {
+            return null;
         }
     }
 }
