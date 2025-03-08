@@ -1,6 +1,7 @@
 package com.opom.jobfinder.feature.job.controller;
 
 import com.opom.jobfinder.feature.admin.location.dtos.GetJobByLocationDTO;
+import com.opom.jobfinder.feature.job.dtos.JobDTO;
 import com.opom.jobfinder.feature.job.service.JobService;
 import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
@@ -25,7 +26,7 @@ public class JobController {
             @RequestParam(value = "type", required = false, defaultValue = "") String type,
             @RequestParam(value = "location", required = false, defaultValue = "") String location,
             @RequestParam(value = "q", required = false, defaultValue = "") String query) {
-        List<GetJobByLocationDTO> response = jobService.getJobs(id);
+        List<JobDTO> response = jobService.getJobs(type, location, query);
         return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, response, Translator.toLocale(MessageConstants.SUCCESS)));
     }
 }
