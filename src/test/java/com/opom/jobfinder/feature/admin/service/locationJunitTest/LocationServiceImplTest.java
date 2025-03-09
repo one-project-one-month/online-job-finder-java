@@ -151,11 +151,6 @@ class LocationServiceImplTest {
         }
     }
 
-//    @Test
-//    void getApplicantsByLocationId() {
-//    }
-
-
     @Test
     void getCompaniesByLocation() {
         List<Company> companies = Instancio.ofList(Company.class).size(3).create();
