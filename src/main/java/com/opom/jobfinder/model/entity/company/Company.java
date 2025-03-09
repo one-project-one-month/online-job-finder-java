@@ -20,6 +20,7 @@ public class Company extends AbstractEntity {
     @Column(name = "account_id")
     private UUID id;
 
+    private String companyFullName;
     private String phone;
     private String website;
     private String address;

@@ -2,6 +2,7 @@ package com.opom.jobfinder.feature.auth.service.impl;
 
 import com.opom.jobfinder.config.TokenType;
 import com.opom.jobfinder.feature.auth.payLoad.request.AuthRequest;
+import com.opom.jobfinder.feature.auth.payLoad.request.ChangePasswordRequest;
 import com.opom.jobfinder.feature.auth.payLoad.request.RegisterRequest;
 import com.opom.jobfinder.feature.auth.payLoad.response.AuthResponse;
 import com.opom.jobfinder.feature.auth.service.AuthService;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,6 +65,7 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(request.password()))
                 .role(role)
                 .build();
+        account.setStatus(true);
         accountRepo.save(account);
         return getAuthResponse(account);
     }
@@ -91,14 +94,39 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UUID getLoginUserId() {
+        Account account = getLoginUserAccount();
+        return account != null ? account.getId() : null;
+    }
+
+    @Override
+    public Account getLoginUserAccount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof Account) {
-                return ((Account) principal).getId();
+                return (Account) principal;
             }
         }
         return null;
+    }
+
+    @Override
+    public AuthResponse changePassword(ChangePasswordRequest request) {
+        if (Objects.equals(request.oldPassword(),request.newPassword())) {
+            throw new BadRequestException("New password cannot be same with old password.");
+        }
+
+        UUID userId = getLoginUserId();
+        Account account = accountRepo.findById(userId).orElseThrow(() -> new BadRequestException("User not found."));
+
+        if (!passwordEncoder.matches(request.oldPassword(), account.getPassword())) {
+            throw new BadRequestException("Wrong password.");
+        }
+
+        account.setPassword(passwordEncoder.encode(request.newPassword()));
+        account = accountRepo.save(account);
+
+        return getAuthResponse(account);
     }
 
 
@@ -116,6 +144,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private AuthResponse getAuthResponse(Account account) {
+        if (account.isStatus()) {
+            throw new AccessDeniedException("Your account was banned.");
+        }
         String jwtToken = jwtService.generateToken(account, jwtExpiration);
         String refreshToken = jwtService.generateRefreshToken(account, refreshExpiration);
         Date expiredAt = new Date(System.currentTimeMillis() + jwtExpiration);
