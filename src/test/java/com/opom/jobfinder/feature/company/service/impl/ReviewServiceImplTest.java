@@ -1,6 +1,5 @@
 package com.opom.jobfinder.feature.company.service.impl;
 
-import com.opom.jobfinder.feature.admin.location.mapper.LocationManager;
 import com.opom.jobfinder.feature.company.review.dtos.ReviewByCompanyDTO;
 import com.opom.jobfinder.feature.company.review.mapper.ReviewManager;
 import com.opom.jobfinder.feature.company.review.service.impl.ReviewServiceImpl;
@@ -8,7 +7,6 @@ import com.opom.jobfinder.model.entity.company.Company;
 import com.opom.jobfinder.model.entity.company.Review;
 import com.opom.jobfinder.model.repo.company.CompanyRepo;
 import com.opom.jobfinder.model.repo.review.ReviewRepo;
-import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.Translator;
 import com.opom.jobfinder.utility.exception.BadRequestException;
 import org.instancio.Instancio;
@@ -70,8 +68,6 @@ class ReviewServiceImplTest {
     void addReview() {
         when(reviewRepo.save(sampleReview)).thenReturn(sampleReview);
         when(companyRepo.findById(UUID.fromString(validId))).thenReturn(Optional.ofNullable(sampleCompany));
-        String reviewId = String.valueOf(sampleReview.getId());
-        mockedStatic.when(() -> Translator.toLocale(anyString())).thenReturn("mocked message");
 
         Review result = reviewService.save(sampleReview,String.valueOf(validId));
         Assertions.assertEquals(result.getComment(), sampleReview.getComment());
@@ -84,7 +80,7 @@ class ReviewServiceImplTest {
     @Test
     void addReview_exceptionThrown() {
         try {
-            Review result = reviewService.save(sampleReview,validId);
+            reviewService.save(sampleReview,validId);
         }catch (Exception e) {
             Assertions.assertEquals(BadRequestException.class, e.getClass());
             assertThat(e.getMessage(),is("Company Not Found!"));
@@ -95,7 +91,7 @@ class ReviewServiceImplTest {
     @Test
     void addReview_exceptionThrown_2() {
         try {
-            Review result = reviewService.save(sampleReview,"23556-ee16-11ef-8daa-325096b39f47");
+            reviewService.save(sampleReview,"23556-ee16-11ef-8daa-325096b39f47");
         } catch (Exception e) {
             Assertions.assertEquals(BadRequestException.class, e.getClass());
             assertThat(e.getMessage(), is("Company Id is not valid!"));
@@ -122,7 +118,7 @@ class ReviewServiceImplTest {
     @Test
     void updateReview_exceptionThrown() {
         try {
-            Review result = reviewService.update(sampleReview,validId);
+            reviewService.update(sampleReview,validId);
         } catch (Exception e) {
             Assertions.assertEquals(BadRequestException.class, e.getClass());
             assertThat(e.getMessage(),is("Company Not Found!"));
@@ -133,7 +129,7 @@ class ReviewServiceImplTest {
     @Test
     void updateReview_exceptionThrown_2() {
         try {
-            Review result = reviewService.update(sampleReview,"23556-ee16-11ef-8daa-325096b39f47");
+            reviewService.update(sampleReview,"23556-ee16-11ef-8daa-325096b39f47");
         } catch (Exception e) {
             Assertions.assertEquals(BadRequestException.class, e.getClass());
             assertThat(e.getMessage(),is("Company Id is not valid!"));
@@ -184,7 +180,7 @@ class ReviewServiceImplTest {
         when(companyRepo.search(any())).thenReturn(Arrays.asList(reviews.toArray()));
 
         try {
-            List<ReviewByCompanyDTO> result = reviewService.getByCompany(companyId.toString());
+            reviewService.getByCompany(companyId.toString());
         } catch (Exception e) {
             Assertions.assertEquals(BadRequestException.class, e.getClass());
             assertThat(e.getMessage(),is("Company Not Found!"));
@@ -208,7 +204,7 @@ class ReviewServiceImplTest {
     void getAverageReviewFromCompany_exceptionThrown() {
         UUID companyId =  sampleCompany.getId();
         try {
-            Double result = reviewService.getAvgFromCompany(companyId.toString());
+            reviewService.getAvgFromCompany(companyId.toString());
         } catch (Exception e) {
             Assertions.assertEquals(BadRequestException.class, e.getClass());
             assertThat(e.getMessage(),is("Company Not Found!"));
