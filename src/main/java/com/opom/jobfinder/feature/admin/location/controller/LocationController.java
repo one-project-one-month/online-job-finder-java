@@ -9,6 +9,7 @@ import com.opom.jobfinder.utility.BaseResponse;
 import com.opom.jobfinder.utility.MessageConstants;
 import com.opom.jobfinder.utility.Translator;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("admin")
 public class LocationController {
 
     // CONSTANT VALUES
     private final LocationService locationService;
-
-    // CONSTRUCTOR
-    public LocationController(LocationService locationService) {
-        this.locationService = locationService;
-    }
 
     @PostMapping("/locations")
     public ResponseEntity<BaseResponse> addLocation(@RequestBody LocationDTO locationDTO ) {
@@ -49,15 +46,17 @@ public class LocationController {
 
     @DeleteMapping("/locations")
     public ResponseEntity<BaseResponse> deleteLocationsById(@RequestParam("id") @NotNull String id) {
-         locationService.delete(id);
+        locationService.delete(id);
         return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, "Delete Location Successfully!", Translator.toLocale(MessageConstants.SUCCESS)));
     }
-
-    @GetMapping("/locations/{id}/jobs")
-    public ResponseEntity<BaseResponse> getJobsByLocations(@PathVariable("id") @NotNull String id) {
-        List<GetJobByLocationDTO> response = locationService.getJobsByLocation(id);
-        return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, response, Translator.toLocale(MessageConstants.SUCCESS)));
-    }
+//
+//    @GetMapping("/locations/{id}/jobs")
+//    public ResponseEntity<BaseResponse> getJobsByLocations(@PathVariable("id") @NotNull String id) {
+//        List<GetJobByLocationDTO> response = locationService.getJobsByLocation(id);
+//        return ResponseEntity.ok(BaseResponse.of(MessageConstants.SUCCESS, response, Translator.toLocale(MessageConstants.SUCCESS)));
+//    }
+//
+//    @GetMapping("")
 
     @GetMapping("/locations/{id}/companies")
     public ResponseEntity<BaseResponse> getCompaniesByLocations(@PathVariable("id") @NotNull String id) {
@@ -67,3 +66,4 @@ public class LocationController {
     }
 
 }
+

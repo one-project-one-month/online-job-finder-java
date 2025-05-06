@@ -40,7 +40,6 @@ public class LocationServiceImpl implements LocationService {
                         .ifPresent(existingLocation -> {
                             throw new BadRequestException("Location already exist!");
                         });
-
         return locationRepo.save(location);
     }
 
@@ -69,32 +68,6 @@ public class LocationServiceImpl implements LocationService {
             locationRepo.save(originLocation.get());
         } else {
             throw new BadRequestException("Location delete failed!");
-        }
-    }
-
-//    @Override
-//    public List<Applicant> getApplicantsByLocationId(String locationId) {
-//        return List.of();
-//    }
-
-    @Override
-    public List<GetJobByLocationDTO> getJobsByLocation(String locationId) {
-        Optional<Location> location = locationRepo.findById(Integer.valueOf(locationId));
-        if(location.isPresent()) {
-            List<Job> jobs = jobRepo.search(cb -> {
-                CriteriaQuery<Job> query = cb.createQuery(Job.class);
-                Root<Job> root = query.from(Job.class);
-                query.select(root).where(cb.equal(root.get("location").get("id"), locationId));
-                return query;
-            });
-            List<GetJobByLocationDTO> jobByLocationDTOS = new ArrayList<>();
-            for (Job job : jobs) {
-                jobByLocationDTOS.add(locationManager.toGetJobByLocationDTO(job));
-            }
-
-            return jobByLocationDTOS;
-        } else {
-            throw new BadRequestException("Location not found!");
         }
     }
 
