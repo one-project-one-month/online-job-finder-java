@@ -38,7 +38,7 @@ public class Job extends AbstractEntity {
     private String address;
 
     private Type type;
-    private Status JobStatus;
+    private Status jobStatus;
 
     @ManyToOne
     private Location location;
