@@ -1,6 +1,7 @@
 package com.opom.jobfinder.feature.auth.controller;
 
 import com.opom.jobfinder.feature.auth.payLoad.request.AuthRequest;
+import com.opom.jobfinder.feature.auth.payLoad.request.ChangePasswordRequest;
 import com.opom.jobfinder.feature.auth.payLoad.request.RegisterRequest;
 import com.opom.jobfinder.feature.auth.service.AuthService;
 import com.opom.jobfinder.utility.BaseResponse;
@@ -29,5 +30,10 @@ public class AuthController {
     @GetMapping("/refresh")
     ResponseEntity<?> refresh(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.success(authService.refresh(request)));
+    }
+
+    @PostMapping("/password/change")
+    ResponseEntity<?> changePassword(@Validated @RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(null);
     }
 }

@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CompanyRepo extends BaseRepository<Company, UUID> {
-    Optional<Company> findOneByEmail(String email);
+//    Optional<Company> findOneByEmail(String email);
 }
