@@ -90,7 +90,7 @@ public class SkillController {
 
         return ResponseEntity.ok(BaseResponse.of(
                 MessageConstants.SUCCESS,
-                null,
+                id,
                 Translator.toLocale(MessageConstants.SUCCESS)
         ));
     }

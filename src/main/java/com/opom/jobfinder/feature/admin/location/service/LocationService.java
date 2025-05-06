@@ -25,12 +25,6 @@ public interface LocationService {
     // DELETE LOCATION (DELETE BY ADMIN)
     void delete(String id);
 
-    // GET APPLICANTS BY LOCATION ID (FOR ADMIN DASHBOARD)
-//    List<Applicant> getApplicantsByLocationId(String locationId);
-
-    // GET JOBS BY LOCATION ID (FOR APPLICANT && FOR ADMIN DASHBOARD)
-    List<GetJobByLocationDTO> getJobsByLocation(String locationID);
-
     // GET COMPANIES BY LOCATION ID (FOR APPLICANT && ADMIN DASHBOARD)
     List<GetCompanyByLocationDTO> getCompaniesByLocation(String locationId);
 

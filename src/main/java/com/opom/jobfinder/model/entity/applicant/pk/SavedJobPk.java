@@ -12,7 +12,6 @@ import java.util.UUID;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class SavedJobPk {
 
     @Column(name = "job_id")
